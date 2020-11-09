@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const RiskFactorSchema = new mongoose.Schema({
   hypertension: { type: String, min: 2, max: 3 },
@@ -14,6 +14,7 @@ const RiskFactorSchema = new mongoose.Schema({
   other: { type: String, min: 2, max: 3 },
   otherSpecify: { type: String, default: "" },
   PreviousSurgery: { type: String },
+  patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
 });
 
 module.exports = mongoose.model("RiskFactor", RiskFactorSchema);

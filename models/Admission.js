@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const AdmissionSchema = new mongoose.Schema({
   dateOfAdmission: { require: true, type: date },
