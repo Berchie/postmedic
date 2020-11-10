@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const InstitutionSchema = new mongoose.Schema(
   {
-    id: Number,
     name: {
       type: String,
       require: true,
