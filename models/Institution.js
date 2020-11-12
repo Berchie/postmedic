@@ -15,7 +15,7 @@ const InstitutionSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    telephone: string,
+    telephone: String,
     user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     doctor: [{ type: mongoose.Schema.Types.ObjectId, ref: "Doctors" }],
     patient: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
