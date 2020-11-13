@@ -8,8 +8,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true },
     passwordHash: { type: String, required: true},
     role: { type: String, enum: ["Admin", "Doctor", "Normal"], required: true },
-    institution: { type: mongoose.Schema.Types.ObjectId, ref: "Institution" },
-  }, { autoIndex: false }
+  }, { autoIndex: false }, {timestamps: true}
 );
 
 

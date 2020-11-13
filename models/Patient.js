@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 
 const PatientSchema = new mongoose.Schema(
   {
@@ -15,17 +14,15 @@ const PatientSchema = new mongoose.Schema(
     city: { type: String, trim: true, require: true },
     telephone: { type: String, trim: true, require: true },
     email: { type: String, lowercase: true, trim: true, require: true },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     instituition: { type: mongoose.Schema.Types.ObjectId, ref: "Institution" },
-    appointment:[{type: mongoose.Schema.Types.ObjectId, ref:'Appointment'}],
-    admission:[{type: mongoose.Schema.Types.ObjectId, ref:'Admission'}],
-    riskFactor:{type: mongoose.Schema.Types.ObjectId, ref:'RiskFactor'},
-    currentPregnancy:[{type: mongoose.Schema.Types.ObjectId, ref:'CurrentPregnancy'}],
-    obstetricHistory:{type:mongoose.Schema.Types.ObjectId, ref:'ObstetricHistory'},
-    
+    appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
+    admissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Admission" }],
+    riskFactor: { type: mongoose.Schema.Types.ObjectId, ref: "RiskFactor" },
+    currentPregnancies: [{ type: mongoose.Schema.Types.ObjectId, ref: "CurrentPregnancy" }],
+    obstetricHistory: { type: mongoose.Schema.Types.ObjectId, ref: "ObstetricHistory" },
   },
+  { timestamps: true },
   { autoIndex: false }
 );
 
-
-module.exports = mongoose.model("Patients", PatientSchema);
+module.exports = mongoose.model("Patient", PatientSchema);

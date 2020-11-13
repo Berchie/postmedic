@@ -16,9 +16,9 @@ const InstitutionSchema = new mongoose.Schema(
       require: true,
     },
     telephone: String,
-    user: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    doctor: [{ type: mongoose.Schema.Types.ObjectId, ref: "Doctors" }],
-    patient: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    doctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Doctors" }],
+    patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patient" }],
   },
   { autoIndex: false }
 );

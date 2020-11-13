@@ -13,8 +13,8 @@ const RiskFactorSchema = new mongoose.Schema({
   scd: { type: String, min: 2, max: 3 },
   other: { type: String, min: 2, max: 3 },
   otherSpecify: { type: String, default: "" },
-  PreviousSurgery: { type: String },
-  patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
-});
+  previousSurgery: { type: String },
+  patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" }
+}, {timestamps: true}, { autoIndex: false });
 
 module.exports = mongoose.model("RiskFactor", RiskFactorSchema);

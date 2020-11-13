@@ -5,7 +5,7 @@ const ObstetricHistorySchema = new mongoose.Schema({
   numberOfBirth: { type: Number, min: 0, default: 0 },
   numberOfAbortionSpontaneous: { type: Number, min: 0, default: 0 },
   numberOfAbortionInduced: { type: Number, min: 0, default: 0 },
-  paitent: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
-});
+  patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" },
+},{ autoIndex: false }, {timestamps: true});
 
 module.exports = mongoose.model("ObstetricHistory", ObstetricHistorySchema);
