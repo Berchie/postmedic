@@ -10,6 +10,25 @@ const logger = require("../utils/logger");
 let initialInstID = null;
 let userid = null;
 
+authRouter.get('/', async (req, res)=>{
+  try {
+    const allUsers = await User.find({institution: req.body.institutionId});
+    res.status(200).send(allUsers);
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
+
+authRouter.get('/:id', async(req, res)=>{
+  try {
+    const user = await User.findById(req.params.id).exec();
+    res.status(200).json(user)
+  } catch (err) {
+    res.status(400).json({error: err.message});
+  }
+});
+
 authRouter.post(
   "/signup",
   [

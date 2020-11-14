@@ -56,7 +56,7 @@ app.use(passport.initialize());
 
 //ROUTES
 /*users route*/
-app.use("/auth", authRouter);
+app.use('/auth', authRouter);
 
 //Patient or client related routes
 app.use('/patient', patientRouter);

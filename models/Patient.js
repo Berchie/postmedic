@@ -4,7 +4,7 @@ const PatientSchema = new mongoose.Schema(
   {
     name: {
       firstname: { type: String, require: true, trim: true },
-      middlename: { type: String },
+      middlename: { type: String, default: "" },
       lastname: { type: String, require: true, trim: true },
     },
     age: { type: Number, require: true },
@@ -13,7 +13,7 @@ const PatientSchema = new mongoose.Schema(
     address: { type: String },
     city: { type: String, trim: true, require: true },
     telephone: { type: String, trim: true, require: true },
-    email: { type: String, lowercase: true, trim: true, require: true },
+    email: { type: String, lowercase: true, trim: true },
     instituition: { type: mongoose.Schema.Types.ObjectId, ref: "Institution" },
     appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
     admissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Admission" }],

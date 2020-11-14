@@ -43,6 +43,7 @@ ObHistoryRouter.put("/:id", async (req, res) => {
         numberOfAbortionInduced: req.body.induced,
       },
     });
+    // res.status(200).send(updateOB);
     res.status(202).json({ message: "Record save." });
   } catch (err) {
     res.status(400).json({ error: err.message });
