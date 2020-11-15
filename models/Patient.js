@@ -1,4 +1,10 @@
 const mongoose = require("mongoose");
+const ObHistoryRouter = require("../controllers/ObstetricHistory");
+const logger = require("../utils/logger");
+const Admission = require("./Admission");
+const Appointment = require("./Appointment");
+const CurrentPregnancy = require("./CurrentPregnancy");
+const RiskFactor = require("./RiskFactor");
 
 const PatientSchema = new mongoose.Schema(
   {
@@ -24,5 +30,14 @@ const PatientSchema = new mongoose.Schema(
   { timestamps: true },
   { autoIndex: false }
 );
+
+PatientSchema.pre("remove", (next) => {
+  ObHistoryRouter.remove({ patient: this._id }).exec();
+  RiskFactor.remove({ patient: this._id }).exec();
+  CurrentPregnancy.remove({ patient: this._id }).exec();
+  Admission.remove({patient:this._id}).exec();
+  Appointment.remove({patient:this._id}).exec();
+  next();
+});
 
 module.exports = mongoose.model("Patient", PatientSchema);

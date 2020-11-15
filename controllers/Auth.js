@@ -10,22 +10,21 @@ const logger = require("../utils/logger");
 let initialInstID = null;
 let userid = null;
 
-authRouter.get('/', async (req, res)=>{
+authRouter.get("/", async (req, res) => {
   try {
-    const allUsers = await User.find({institution: req.body.institutionId});
+    const allUsers = await User.find().populate(req.query.instId);
     res.status(200).send(allUsers);
   } catch (err) {
-    res.status(400).json({error: err.message});
+    res.status(400).json({ error: err.message });
   }
 });
 
-
-authRouter.get('/:id', async(req, res)=>{
+authRouter.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id).exec();
-    res.status(200).json(user)
+    res.status(200).json(user);
   } catch (err) {
-    res.status(400).json({error: err.message});
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -120,16 +119,16 @@ authRouter.post(
         try {
           const saveDefaultUser = await defaultUser.save();
           res.status(201).json({ msg: "user created!" });
-          userid=saveDefaultUser._id;
+          userid = saveDefaultUser._id;
         } catch (error) {
           res.json({ message: error.message });
         }
 
         try {
           institution.users.push(userid);
-           institution.save();
+          institution.save();
         } catch (err) {
-          res.status(400).json({error: err.message});
+          res.status(400).json({ error: err.message });
         }
       }
     });
@@ -254,7 +253,7 @@ authRouter.post(
       id: user.id,
       name: user.name,
     };
-    
+
     // Sign token
     jwt.sign(
       payload,
@@ -272,4 +271,20 @@ authRouter.post(
   }
 );
 
+authRouter.delete("/:id", async (req, res) => {
+  try {
+    const institution = await Patient.find().populate(req.params.id);
+
+    const deletedUser = await User.findByIdAndDelete(req.params.id).exec();
+    res.status(300).json({ message: "Record deleted!" });
+
+    var index = institution.users.indexOf(delPatId);
+    if (index > -1) {
+      institution.patients.splice(index, 1);
+    }
+    institution.save();
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 module.exports = authRouter;

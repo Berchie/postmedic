@@ -88,7 +88,7 @@ doctorRouter.put("/:id", async (req, res) => {
 
 //delete doctor
 doctorRouter.delete("/:id", async (req, res) => {
-  const institution = await Institution.find({ doctors: req.params.id });
+  const institution = await Institution.find().populate(req.params.id);
 
   const instDoctorId = req.params.id;
 

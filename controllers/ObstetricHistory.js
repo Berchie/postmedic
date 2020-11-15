@@ -3,9 +3,9 @@ const { body, validationResult } = require("express-validator");
 const ObstetericHistory = require("../models/ObstetricHistory");
 const Patient = require("../models/Patient");
 
-ObHistoryRouter.get("/", async (req, res) => {
+ObHistoryRouter.get("/:id", async (req, res) => {
   try {
-    const data = await ObstetericHistory.find({ patient: req.body.id }).exec();
+    const data = await ObstetericHistory.find().populate(req.params.id); //id = patient _id
     res.status(200).json(data);
   } catch (err) {
     res.status(400).json({ error: err.message });

@@ -17,6 +17,7 @@ const admissionRouter = require('./controllers/Admission');
 const appointmentRouter = require('./controllers/Appointment');
 const riskFactorRouter = require('./controllers/RiskFactor');
 const patientRouter = require('./controllers/Patient');
+const institutionRoute = require('./controllers/Institution');
 
 require("dotenv").config();
 
@@ -57,6 +58,9 @@ app.use(passport.initialize());
 //ROUTES
 /*users route*/
 app.use('/auth', authRouter);
+
+//institution route
+app.use('/institution', institutionRoute);
 
 //Patient or client related routes
 app.use('/patient', patientRouter);
