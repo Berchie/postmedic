@@ -1,11 +1,14 @@
 import React from 'react'
-import { Button } from 'antd';
 import './App.less';
+import Dasboard from './components/Dasboard';
+import Home from './components/Home';
+
 
 function App() {
   return (
     <div className="App">
-      <Button type="primary">Ant Design Button</Button>
+      {/* <Dasboard></Dasboard> */}
+      <Home></Home>
     </div>
   );
 }
