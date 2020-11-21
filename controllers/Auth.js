@@ -76,7 +76,7 @@ authRouter.post(
 
     //create new sign up
     const institution = new Institution({
-      name: req.body.name,
+      institution: req.body.name,
       address: req.body.address,
       city: req.body.city,
       telephone: req.body.telephone,
