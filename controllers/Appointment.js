@@ -26,7 +26,7 @@ appointmentRouter.post(
 
     const patient = Paitent.findOne({ _id: req.body.patientId });
 
-    const Appointment = new Appointment({
+    const appointment = new Appointment({
       DateOfAppointment: req.body.appointmentDate,
       Status: req.body.status,
       DateOfArrival: req.body.arrivalDate,
@@ -34,7 +34,7 @@ appointmentRouter.post(
     });
 
     try {
-      const savedAppointment = await Appointment.save();
+      const savedAppointment = await appointment.save();
       res.status(201).json({ message: "Record saved." });
       patient.appointment.push(savedAppointment._id);
       patient.save();
@@ -46,7 +46,7 @@ appointmentRouter.post(
 
 appointmentRouter.put("/:id", async (req, res) => {
   try {
-    const updateCP = await Appointment.findByIdAndUpdate(req.params.id, {
+    const updateAppoinment = await Appointment.findByIdAndUpdate(req.params.id, {
       $set: {
         DateOfAppointment: req.body.appointmentDate,
         Status: req.body.status,
@@ -64,7 +64,7 @@ appointmentRouter.delete("/:id", async (req, res) => {
     const patient = await Paitent.find({ currentPregnancies: req.params.id });
 
     const patApId = req.params.id;
-    const deletedCuurentPreg = await Paitent.findByIdAndRemove(req.params.id);
+    const deletedAppointment = await Paitent.findByIdAndRemove(req.params.id);
     res.status(203).json({ message: "Record deleted." });
 
     //remove the object id reference from the patient collection
