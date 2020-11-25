@@ -130,6 +130,24 @@ patientRouter.post(
       res.status(401).json({ error: err.message });
     }
 
+    //create Obstetric History document
+    const obstetricHistory = new ObstetericHistory({
+      numberOfPregnancies: parseInt(req.body.pregnancy),
+      numberOfBirth: parseInt(req.body.birth),
+      numberOfAbortionSpontaneous: parseInt(req.body.spontaneous),
+      numberOfAbortionInduced: parseInt(req.body.induced),
+      patient: patientId
+    });
+  
+    try {
+      const savedObstetricHisotry = await obstetricHistory.save();
+      res.status(201).json({ message: "Record saved." });
+      patient.obstetricHistory = savedObstetricHisotry._id;
+      patient.save();
+    } catch (err) {
+      res.status(401).json({ error: err.message });
+    }
+
     //create current pregnancy
     const currentPragnancy = new CurrentPregnancy({
       edd: parseInt(req.body.edd),
@@ -145,6 +163,34 @@ patientRouter.post(
     } catch (err) {
       res.status(401).json({ error: err.message });
     }
+
+    //create Risk Factor document
+    const riskFactor = new RiskFactor({
+      hypertension: req.body.hypertension,
+      heartDisease: req.body.heartDisease,
+      sickleCellDisease: req.body.sickleCellDisease,
+      diabetes: req.body.diabetes,
+      epilepsy: req.body.epilepsy,
+      asthma: req.body.asthma,
+      tb: req.body.tb,
+      respiratoryDisease: req.body.respiratoryDisease,
+      mentalIllness: req.body.mentalIllness,
+      scd: req.body.scd,
+      other: req.body.other,
+      otherSpecify: req.body.otherSpecify,
+      previousSurgery: req.body.previousSurgery,
+      patient: patientId,
+    });
+  
+    try {
+      const savedriskFactor = await riskFactor.save();
+      res.status(201).json({ message: "Record saved." });
+      patient.riskFactor = savedriskFactor._id;
+      patient.save();
+    } catch (err) {
+      res.status(401).json({ error: err.message });
+    }
+    
   }
 );
 

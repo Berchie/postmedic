@@ -1,8 +1,9 @@
 import React from "react";
 import { inputField, emailInputField, passwordInputField } from "./Inputs";
 import { useForm, Controller } from "react-hook-form";
-import { Button } from "antd";
+import { Button, Checkbox } from "antd";
 import "../../styles/Register.less";
+
 
 export default function RegisterForm() {
   const { handleSubmit, control, errors, reset } = useForm();
@@ -20,6 +21,7 @@ export default function RegisterForm() {
           username: "",
           email: "",
           password: "",
+          aggreement: false
         }),
       1000
     );
@@ -124,7 +126,20 @@ export default function RegisterForm() {
         />
         {errors.password && <span className='error'>Password field is required</span>}
       </div>
-      
+      <div className='input-group'>
+        <Controller
+        name='aggreement'
+        control={control}
+        render={props => (
+          <Checkbox
+            onChange={e => props.onChange(e.target.checked)}
+            checked={props.value}
+          >I have read the <a href="">agreement</a></Checkbox>
+        )}
+        rules={{required: true}}
+        />
+        {errors.aggreement && <span className='error'>Aggreement field is required</span>}
+      </div>
       <Button type='primary' htmlType='submit'>
         Register
       </Button>
