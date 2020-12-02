@@ -16,8 +16,8 @@ CurrentPregRouter.post("/", async (req, res) => {
   const patient = Paitent.findOne({ _id: req.body.patientId });
 
   const currentPragnancy = new CurrentPragnancy({
-    edd: parseInt(req.body.edd),
-    ega: parseInt(req.body.ega),
+    edd: req.body.edd,
+    ega: req.body.ega,
     patient: patient._id,
   });
 
@@ -35,8 +35,8 @@ CurrentPregRouter.put("/:id", async (req, res) => {
   try {
     const updateCP = await CurrentPragnancy.findByIdAndUpdate(req.params.id, {
       $set: {
-        edd: parseInt(req.body.edd),
-        ega: parseInt(req.body.ega),
+        edd: req.body.edd,
+        ega: req.body.ega,
       },
     });
     res.status(202).json({ message: "Record save." });

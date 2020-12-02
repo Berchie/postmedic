@@ -36,13 +36,13 @@ patientRouter.post(
   "/newpatient",
   [
     body("firstname", "firstname name field cannot be empty.").not().isEmpty(),
-    body("firstname", "First name must be between 4-150 characters long.").isLength({
-      min: 4,
+    body("firstname", "First name must be between 2-150 characters long.").isLength({
+      min: 2,
       max: 150,
     }),
     body("lastname", "Last name field cannot be empty.").not().isEmpty(),
-    body("latname", "Last name must be between 4-150 characters long.").isLength({
-      min: 4,
+    body("latname", "Last name must be between 2-150 characters long.").isLength({
+      min: 2,
       max: 150,
     }),
     body("age", "Age field cannot be empty").not().isEmpty(),
@@ -150,7 +150,7 @@ patientRouter.post(
 
     //create current pregnancy
     const currentPragnancy = new CurrentPregnancy({
-      edd: parseInt(req.body.edd),
+      edd: req.body.edd,
       ega: parseInt(req.body.ega),
       patient: patient._id,
     });
@@ -190,7 +190,7 @@ patientRouter.post(
     } catch (err) {
       res.status(401).json({ error: err.message });
     }
-    
+
   }
 );
 
