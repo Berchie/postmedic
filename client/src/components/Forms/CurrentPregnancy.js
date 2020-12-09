@@ -6,26 +6,17 @@ import { useForm, Controller } from "react-hook-form";
 import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
-import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import moment from "moment";
 
-
 function CurrentPregnancy(props) {
-  const { control, handleSubmit, register } = useForm();
+  const { control, handleSubmit } = useForm();
   const { action, state } = useStateMachine(updateAction);
 
   const dateFormat = "YYYY-MM-DD";
 
   const onSubmit = (data) => {
     action(data);
-    console.log(
-      new Date(data.edd1).getDate().toString() +
-        "-" +
-        new Date(data.edd1).getMonth().toString() +
-        "-" +
-        new Date(data.edd1).getFullYear().toString(), data
-    );
+    console.log(moment(data.edd1).format("l"));
     props.history.push("./riskfactor");
   };
 
@@ -33,56 +24,28 @@ function CurrentPregnancy(props) {
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2>Current Pregnancy</h2>
 
-      <label>Estimated Date of Delivery</label>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <label>
+        Estimated Date of Delivery {'   '}
         <Controller
-          name='edd'
+          as={DatePicker}
+          name='edd1'
           control={control}
-          defaultValue={state.data.edd}
-          render={({ ref, ...reset }) => (
-            <KeyboardDatePicker
-              disableToolbar
-              //  fullWidth
-              name='edd'
-              variant='inline'
-              format='MM/dd/yyyy'
-              margin='normal'
-              id='date-picker-inline'
-              label='Date picker inline'
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-              {...reset}
-            />
-          )}
+          defaultValue={moment(state.data.edd1)}
+          format={dateFormat}
+          size='small'
         />
-      </MuiPickersUtilsProvider>
+      </label>
 
-      <Controller
-        as={DatePicker}
-        name='edd1'
-        control={control}
-        value='7-11-2020'
-        defaultValue={moment()}
-        format={dateFormat}
-        size='small'
-      />
-      <input
-        type='date'
-        name='edd2'
-        ref={register}
-        defaultValue={state.data.edd2}
-        onChange={(e) => e.target.value}
-      />
-
-      <label>EGA</label>
-      <Controller
-        as={InputNumber}
-        name='ega'
-        control={control}
-        min={0}
-        defaultValue={state.data.ega}
-      />
+      <label>
+        EGA {"   "}
+        <Controller
+          as={InputNumber}
+          name='ega'
+          control={control}
+          min={0}
+          defaultValue={state.data.ega}
+        />
+      </label>
 
       <br />
       <Button onClick={() => props.history.goBack()} style={{ marginTop: 15, width: 150 }}>

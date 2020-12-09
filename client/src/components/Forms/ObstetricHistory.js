@@ -1,5 +1,6 @@
 import React from "react";
 import { InputNumber, Button } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useForm, Controller } from "react-hook-form";
 import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
@@ -53,17 +54,19 @@ export default withRouter(function ObstetricHistory(props) {
       />
       <br />
       <Button
-        type='primary'
+        type='normal'
         security
         onClick={() => props.history.goBack()}
         style={{ marginTop: 15, width: 150, float: "left" }}>
-        Previous
+        <LeftOutlined />
+        Identification
       </Button>
       <Button
         type='primary'
         htmlType='submit'
-        style={{ marginTop: 15, width: 150, float: "right" }}>
-        Next
+        style={{ marginTop: 15, width: 170, float: "right" }}>
+        Current Pregnancy
+        <RightOutlined />
       </Button>
     </form>
   );

@@ -7,11 +7,11 @@ import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
 import TextArea from "antd/lib/input/TextArea";
 
-export default withRouter (function RiskFactor(props) {
+export default withRouter(function RiskFactor(props) {
   const { control, handleSubmit } = useForm();
   const { action, state } = useStateMachine(updateAction);
 
-  const { options } = Select;
+  // const { options } = Select;
 
   const onSubmit = (data) => {
     action(data);
@@ -175,6 +175,59 @@ export default withRouter (function RiskFactor(props) {
           />
         </Col>
       </Row>
+
+      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Col className='gutter-row' span={6}>
+          <label>HIV Infection</label>
+          <Controller
+            name='scd'
+            as={Input}
+            control={control}
+            defaultValue={state.data.scd}
+            className='input'
+          />
+        </Col>
+        <Col className='gutter-row' span={6}>
+          <label>Other</label>
+          <Controller
+            name='other'
+            as={Select}
+            options={[
+              { value: "", label: "Select...." },
+              { value: "no", label: "No" },
+              { value: "yes", label: "Yes" },
+            ]}
+            control={control}
+            defaultValue={state.data.other}
+            className='input'
+          />
+        </Col>
+        <Col span={6}>
+          <label style={{ fontStyle: "italic" }}>
+            Other,Specify
+            <Controller
+              name='otherSpecify'
+              as={Input}
+              control={control}
+              defaultValue={state.data.otherSpecify}
+              className='input'
+            />
+          </label>
+        </Col>
+      </Row>
+      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Col span={18}>
+          <label>Previous Surgery</label>
+          <Controller
+            name='previousSurgery'
+            as={TextArea}
+            control={control}
+            style={{ width: "50%" }}
+            defaultValue={state.data.previousSurgery}
+            className='input'
+          />
+        </Col>
+      </Row>
       {/* <label>Hypertension</label>
       <Controller
         name='hypertension'
@@ -310,7 +363,7 @@ export default withRouter (function RiskFactor(props) {
         className='input'
       /> */}
 
-      <label>HIV Infection</label>
+      {/* <label>HIV Infection</label>
       <Controller
         name='scd'
         as={Input}
@@ -318,9 +371,9 @@ export default withRouter (function RiskFactor(props) {
         style={{ width: "30%" }}
         defaultValue={state.data.scd}
         className='input'
-      />
+      /> */}
 
-      <label>Other</label>
+      {/* <label>Other</label>
       <Controller
         name='other'
         as={Select}
@@ -341,9 +394,9 @@ export default withRouter (function RiskFactor(props) {
         style={{ width: "40%" }}
         defaultValue={state.data.otherSpecify}
         className='input'
-      />
+      /> */}
 
-      <label>Previous Surgery</label>
+      {/* <label>Previous Surgery</label>
       <Controller
         name='previousSurgery'
         as={TextArea}
@@ -351,7 +404,7 @@ export default withRouter (function RiskFactor(props) {
         style={{ width: "50%" }}
         defaultValue={state.data.previousSurgery}
         className='input'
-      />
+      /> */}
 
       <br />
       <Button onClick={() => props.history.goBack()} style={{ marginTop: 17, width: 150 }}>

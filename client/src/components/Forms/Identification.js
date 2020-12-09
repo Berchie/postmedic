@@ -1,10 +1,10 @@
 import React from "react";
 import { Input, InputNumber, Button, Select } from "antd";
+import { RightOutlined } from "@ant-design/icons";
 import { useForm, Controller } from "react-hook-form";
 import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
-
 
 export default withRouter(function Identification(props) {
   const { control, handleSubmit, errors } = useForm();
@@ -93,7 +93,7 @@ export default withRouter(function Identification(props) {
         className='input'
       />
       {errors.hospitalId && <span className='errors'>Hospital Id field is required</span>}
-      
+
       <label>City</label>
       <Controller
         as={Input}
@@ -129,11 +129,16 @@ export default withRouter(function Identification(props) {
         // style={{ width: "70%" }}
         rules={{ required: true }}
         className='input'
-      /><br/>
+      />
+      <br />
       {errors.hospitalId && <span className='errors'>Hospital Id field is required</span>}
 
-      <Button type='primary' htmlType='submit' style={{marginTop: 15, width: 150, float:"right"}}>
-        Next
+      <Button
+        type='primary'
+        htmlType='submit'
+        style={{ marginTop: 15, width: 150, float: "right" }}>
+        Obstetric History
+        <RightOutlined />
       </Button>
     </form>
   );
