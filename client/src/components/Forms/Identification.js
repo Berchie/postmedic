@@ -18,121 +18,145 @@ export default withRouter(function Identification(props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2>Identification</h2>
-      <label>First Name</label>
-      <Controller
-        as={Input}
-        name='firstname'
-        control={control}
-        minLength={2}
-        maxLength={150}
-        defaultValue={state.data.firstname}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.firstname && <span className='errors'>First Name field is required</span>}
+      <label>
+        First Name {"    "}
+        <Controller
+          as={Input}
+          name='firstname'
+          control={control}
+          minLength={2}
+          maxLength={150}
+          style={{ width: "60%" }}
+          defaultValue={state.data.firstname}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.firstname && <span className='errors'>First Name field is required</span>}
+      </label>
 
-      <label>Middle Name</label>
-      <Controller
-        as={Input}
-        name='middlename'
-        control={control}
-        minLength={2}
-        maxLength={150}
-        defaultValue={state.data.middlename}
-        className='input'
-      />
+      <label>
+        Middle Name {"    "}
+        <Controller
+          as={Input}
+          name='middlename'
+          control={control}
+          minLength={2}
+          maxLength={150}
+          style={{ width: "60%" }}
+          defaultValue={state.data.middlename}
+          className='input'
+        />
+      </label>
 
-      <label>Last Name</label>
-      <Controller
-        as={Input}
-        name='lastname'
-        control={control}
-        minLength={2}
-        maxLength={150}
-        defaultValue={state.data.lastname}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.lastname && <span className='errors'>Last Name field is required</span>}
+      <label>
+        Last Name {"    "}
+        <Controller
+          as={Input}
+          name='lastname'
+          control={control}
+          minLength={2}
+          maxLength={150}
+          style={{ width: "60%" }}
+          defaultValue={state.data.lastname}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.lastname && <span className='errors'>Last Name field is required</span>}
+      </label>
 
-      <label>Age: </label>
-      <Controller
-        as={InputNumber}
-        name='age'
-        min={10}
-        max={999}
-        control={control}
-        defaultValue={state.data.age}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.age && <span className='errors'>Age field is required</span>}
+      <label>
+        Age: {"    "}
+        <Controller
+          as={InputNumber}
+          name='age'
+          min={10}
+          max={999}
+          control={control}
+          defaultValue={state.data.age}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.age && <span className='errors'>Age field is required</span>}
+      </label>
 
-      <label>Gender</label>
-      <Controller
-        name='gender'
-        as={Select}
-        options={[{ value: "" }, { value: "Male" }, { value: "Female" }]}
-        control={control}
-        style={{ width: "30%" }}
-        defaultValue={state.data.gender}
-        className='input'
-        rules={{ required: true }}
-      />
-      {errors.gender && <span className='errors'>Gender field is required</span>}
+      <label>
+        Gender {"    "}
+        <Controller
+          name='gender'
+          as={Select}
+          options={[
+            { value: "", label: "Select...." },
+            { value: "male", label: "Male" },
+            { value: "female", label: "female" },
+          ]}
+          control={control}
+          style={{ width: "40%" }}
+          defaultValue={state.data.gender}
+          className='input'
+          rules={{ required: true }}
+        />
+        {errors.gender && <span className='errors'>Gender field is required</span>}
+      </label>
 
-      <label>Hospital ID</label>
-      <Controller
-        as={Input}
-        name='hospitalId'
-        control={control}
-        maxLength={15}
-        defaultValue={state.data.hospitalId}
-        // style={{ width: "70%" }}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.hospitalId && <span className='errors'>Hospital Id field is required</span>}
+      <label>
+        Hospital ID {"    "}
+        <Controller
+          as={Input}
+          name='hospitalId'
+          control={control}
+          maxLength={15}
+          defaultValue={state.data.hospitalId}
+          style={{ width: "60%" }}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.hospitalId && <span className='errors'>Hospital Id field is required</span>}
+      </label>
 
-      <label>City</label>
-      <Controller
-        as={Input}
-        name='city'
-        control={control}
-        maxLength={50}
-        defaultValue={state.data.city}
-        // style={{ width: "70%" }}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.city && <span className='errors'>City field is required</span>}
+      <label>
+        City {"    "}
+        <Controller
+          as={Input}
+          name='city'
+          control={control}
+          maxLength={50}
+          defaultValue={state.data.city}
+          style={{ width: "60%" }}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.city && <span className='errors'>City field is required</span>}
+      </label>
 
-      <label>Phone</label>
-      <Controller
-        as={Input}
-        name='phone'
-        control={control}
-        maxLength={15}
-        defaultValue={state.data.phone}
-        // style={{ width: "70%" }}
-        rules={{ required: true }}
-        className='input'
-      />
-      {errors.phone && <span className='errors'>Phone field is required</span>}
+      <label>
+        Phone {"    "}
+        <Controller
+          as={Input}
+          name='phone'
+          control={control}
+          maxLength={15}
+          defaultValue={state.data.phone}
+          style={{ width: "60%" }}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.phone && <span className='errors'>Phone field is required</span>}
+      </label>
 
-      <label>Email</label>
-      <Controller
-        as={Input}
-        name='email'
-        control={control}
-        defaultValue={state.data.email}
-        // style={{ width: "70%" }}
-        rules={{ required: true }}
-        className='input'
-      />
+      <label>
+        Email {"    "}
+        <Controller
+          as={Input}
+          name='email'
+          control={control}
+          defaultValue={state.data.email}
+          style={{ width: "60%" }}
+          rules={{ required: true }}
+          className='input'
+        />
+        {errors.email && <span className='errors'>Email field is required</span>}
+      </label>
       <br />
-      {errors.hospitalId && <span className='errors'>Hospital Id field is required</span>}
-
       <Button
         type='primary'
         htmlType='submit'
