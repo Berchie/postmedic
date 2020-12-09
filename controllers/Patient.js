@@ -72,17 +72,17 @@ patientRouter.post(
 
     const patient = new Patient({
       name: {
-        firstname: req.body.firstname,
-        middlename: req.body.middlename,
-        lastname: req.body.lastname,
+        firstname: req.body.data.firstname,
+        middlename: req.body.data.middlename,
+        lastname: req.body.data.lastname,
       },
-      age: parseInt(req.body.age),
-      gender: req.body.gender,
-      hospitalId: req.body.hospitalId,
-      address: req.body.address,
-      city: req.body.city,
-      telephone: req.body.phone,
-      email: req.body.email,
+      age: parseInt(req.body.data.age),
+      gender: req.body.data.gender,
+      hospitalId: req.body.data.hospitalId,
+      address: req.body.data.address,
+      city: req.body.data.city,
+      telephone: req.body.data.phone,
+      email: req.body.data.email,
       instituition: patient._id,
     });
 
@@ -98,10 +98,10 @@ patientRouter.post(
 
     //create admission document
     const admission = new Admission({
-      dateOfAdmission: req.body.admissionDate,
-      dateOfDischarged: req.body.dischargedDate,
-      durationOfStay: parseInt(req.body.numberOfDays),
-      dischargedDiagnosis: req.body.dischargedDiagnosis,
+      dateOfAdmission: req.body.data.admissionDate,
+      dateOfDischarged: req.body.data.dischargedDate,
+      durationOfStay: parseInt(req.body.data.numberOfDays),
+      dischargedDiagnosis: req.body.data.dischargedDiagnosis,
       patient: patientId,
     });
     try {
@@ -115,9 +115,9 @@ patientRouter.post(
     
     //create appointment document
     const appointment = new Appointment({
-      DateOfAppointment: req.body.appointmentDate,
-      Status: req.body.status,
-      DateOfArrival: req.body.arrivalDate,
+      DateOfAppointment: req.body.data.appointmentDate,
+      // Status: req.body.status,
+      // DateOfArrival: req.body.data.arrivalDate,
       patient: patientId,
     });
 
@@ -132,10 +132,10 @@ patientRouter.post(
 
     //create Obstetric History document
     const obstetricHistory = new ObstetericHistory({
-      numberOfPregnancies: parseInt(req.body.pregnancy),
-      numberOfBirth: parseInt(req.body.birth),
-      numberOfAbortionSpontaneous: parseInt(req.body.spontaneous),
-      numberOfAbortionInduced: parseInt(req.body.induced),
+      numberOfPregnancies: parseInt(req.body.data.pregnancy),
+      numberOfBirth: parseInt(req.body.data.birth),
+      numberOfAbortionSpontaneous: parseInt(req.body.data.spontaneous),
+      numberOfAbortionInduced: parseInt(req.body.data.induced),
       patient: patientId
     });
   
@@ -150,8 +150,8 @@ patientRouter.post(
 
     //create current pregnancy
     const currentPragnancy = new CurrentPregnancy({
-      edd: req.body.edd,
-      ega: parseInt(req.body.ega),
+      edd: req.body.data.edd,
+      ega: parseInt(req.body.data.ega),
       patient: patient._id,
     });
   
@@ -166,19 +166,19 @@ patientRouter.post(
 
     //create Risk Factor document
     const riskFactor = new RiskFactor({
-      hypertension: req.body.hypertension,
-      heartDisease: req.body.heartDisease,
-      sickleCellDisease: req.body.sickleCellDisease,
-      diabetes: req.body.diabetes,
-      epilepsy: req.body.epilepsy,
-      asthma: req.body.asthma,
-      tb: req.body.tb,
-      respiratoryDisease: req.body.respiratoryDisease,
-      mentalIllness: req.body.mentalIllness,
-      scd: req.body.scd,
-      other: req.body.other,
-      otherSpecify: req.body.otherSpecify,
-      previousSurgery: req.body.previousSurgery,
+      hypertension: req.body.data.hypertension,
+      heartDisease: req.body.data.heartDisease,
+      sickleCellDisease: req.body.data.sickleCellDisease,
+      diabetes: req.body.data.diabetes,
+      epilepsy: req.body.data.epilepsy,
+      asthma: req.body.data.asthma,
+      tb: req.body.data.tb,
+      respiratoryDisease: req.body.data.respiratoryDisease,
+      mentalIllness: req.body.data.mentalIllness,
+      scd: req.body.data.scd,
+      other: req.body.data.other,
+      otherSpecify: req.body.data.otherSpecify,
+      previousSurgery: req.body.data.previousSurgery,
       patient: patientId,
     });
   
