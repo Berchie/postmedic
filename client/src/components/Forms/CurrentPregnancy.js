@@ -28,7 +28,7 @@ function CurrentPregnancy(props) {
         Estimated Date of Delivery {'   '}
         <Controller
           as={DatePicker}
-          name='edd1'
+          name='edd'
           control={control}
           defaultValue={moment(state.data.edd1)}
           format={dateFormat}
