@@ -7,7 +7,6 @@ import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
 
 export default withRouter(function ObstetricHistory(props) {
-  // const  history = useHistory();
   const { control, handleSubmit } = useForm();
   const { action, state } = useStateMachine(updateAction);
 
@@ -20,38 +19,46 @@ export default withRouter(function ObstetricHistory(props) {
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2>Obstetric History</h2>
 
-      <label>Number of Pregnancies</label>
-      <Controller
-        as={InputNumber}
-        name='pregnancy'
-        control={control}
-        min={0}
-        defaultValue={state.data.pregnancy}
-      />
-      <label>Number of Birth</label>
-      <Controller
-        as={InputNumber}
-        name='birth'
-        control={control}
-        min={0}
-        defaultValue={state.data.birth}
-      />
-      <label>Number of Spontaneous Abortion</label>
-      <Controller
-        as={InputNumber}
-        name='spontaneous'
-        control={control}
-        min={0}
-        defaultValue={state.data.spontaneous}
-      />
-      <label>Number of Induced Abortion</label>
-      <Controller
-        as={InputNumber}
-        name='induced'
-        control={control}
-        min={0}
-        defaultValue={state.data.induced}
-      />
+      <label>
+        Number of Pregnancies {"   "}
+        <Controller
+          as={InputNumber}
+          name='pregnancy'
+          control={control}
+          min={0}
+          defaultValue={state.data.pregnancy}
+        />
+      </label>
+      <label>
+        Number of Birth {"   "}
+        <Controller
+          as={InputNumber}
+          name='birth'
+          control={control}
+          min={0}
+          defaultValue={state.data.birth}
+        />
+      </label>
+      <label>
+        Number of Spontaneous Abortion {"   "}
+        <Controller
+          as={InputNumber}
+          name='spontaneous'
+          control={control}
+          min={0}
+          defaultValue={state.data.spontaneous}
+        />
+      </label>
+      <label>
+        Number of Induced Abortion {"   "}
+        <Controller
+          as={InputNumber}
+          name='induced'
+          control={control}
+          min={0}
+          defaultValue={state.data.induced}
+        />
+      </label>
       <br />
       <Button
         type='normal'
