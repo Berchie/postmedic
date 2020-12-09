@@ -7,9 +7,10 @@ const Appointment = require("../models/Appointment");
 const Admission = require("../models/Admission");
 const RiskFactor = require("../models/RiskFactor");
 const CurrentPregnancy = require("../models/CurrentPregnancy");
+const {format} = require('date-fns');
 
 let patientId = null;
-
+const dateFromat = 'YYYY-MM-DD';
 
 patientRouter.get("/", async (req, res) => {
   res.send("Populating Patien related records.");
@@ -98,8 +99,8 @@ patientRouter.post(
 
     //create admission document
     const admission = new Admission({
-      dateOfAdmission: req.body.data.admissionDate,
-      dateOfDischarged: req.body.data.dischargedDate,
+      dateOfAdmission: format(req.body.data.admissionDate,dateFromat),
+      dateOfDischarged: format(req.body.data.dischargedDate,dateFromat),
       durationOfStay: parseInt(req.body.data.numberOfDays),
       dischargedDiagnosis: req.body.data.dischargedDiagnosis,
       patient: patientId,
@@ -115,7 +116,7 @@ patientRouter.post(
     
     //create appointment document
     const appointment = new Appointment({
-      DateOfAppointment: req.body.data.appointmentDate,
+      DateOfAppointment: format(req.body.data.appointmentDate,dateFromat),
       // Status: req.body.status,
       // DateOfArrival: req.body.data.arrivalDate,
       patient: patientId,
@@ -131,7 +132,7 @@ patientRouter.post(
     }
 
     //create Obstetric History document
-    const obstetricHistory = new ObstetericHistory({
+    const obstetricHistory = new ObstetricHistory({
       numberOfPregnancies: parseInt(req.body.data.pregnancy),
       numberOfBirth: parseInt(req.body.data.birth),
       numberOfAbortionSpontaneous: parseInt(req.body.data.spontaneous),
@@ -150,7 +151,7 @@ patientRouter.post(
 
     //create current pregnancy
     const currentPragnancy = new CurrentPregnancy({
-      edd: req.body.data.edd,
+      edd: format(req.body.data.edd, dateFromat),
       ega: parseInt(req.body.data.ega),
       patient: patient._id,
     });
