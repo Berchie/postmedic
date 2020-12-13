@@ -6,6 +6,8 @@ import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
 import TextArea from "antd/lib/input/TextArea";
+import '../../styles/Patient.less'
+
 
 export default withRouter(function RiskFactor(props) {
   const { control, handleSubmit } = useForm();
@@ -20,8 +22,8 @@ export default withRouter(function RiskFactor(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h2>Risk Factors</h2>
+    <form onSubmit={handleSubmit(onSubmit)} className="form" >
+      <h2 className="h2">Risk Factors</h2>
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col className='gutter-row' span={6}>
           <label>Hypertension</label>

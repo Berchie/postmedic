@@ -6,6 +6,8 @@ import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
 import moment from "moment";
+import "../../styles/Patient.less";
+
 
 export default withRouter(function Admission(props) {
   const { control, handleSubmit } = useForm();

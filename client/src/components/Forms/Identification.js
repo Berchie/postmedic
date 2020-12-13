@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { withRouter } from "react-router-dom";
 import { useStateMachine } from "little-state-machine";
 import updateAction from "../updateAction";
+import '../../styles/Patient.less'
 
 export default withRouter(function Identification(props) {
   const { control, handleSubmit, errors } = useForm();
