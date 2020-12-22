@@ -10,7 +10,7 @@ export default function Profile() {
       <Row>
         <Col style={{padding: 20}}>
           <Card
-            style={{ width: 400}}
+            style={{ width: 500}}
             cover={
               <img
                 alt='example'
@@ -18,40 +18,22 @@ export default function Profile() {
               />
             }
             actions={[
-              <SettingOutlined key='setting' />,
-              <EditOutlined key='edit' />,
-              <EllipsisOutlined key='ellipsis' />,
+              // <SettingOutlined key='setting' />,
+              // <EditOutlined key='edit' />,
+              // <EllipsisOutlined key='ellipsis' />,
             ]}>
             <Meta
               avatar={
                 <Avatar src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' />
               }
-              title='Card title'
+              title='Berchie Agyemang Nti'
               description='This is the description'
             />
-          </Card>
-        </Col>
-        <Col style={{padding: 20}}>
-          <Card
-            style={{ width: 400 }}
-            cover={
-              <img
-                alt='example'
-                src='https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
-              />
-            }
-            actions={[
-              <SettingOutlined key='setting' />,
-              <EditOutlined key='edit' />,
-              <EllipsisOutlined key='ellipsis' />,
-            ]}>
-            <Meta
-              avatar={
-                <Avatar src='https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png' />
-              }
-              title='Card title'
-              description='This is the description'
-            />
+            <br/>
+            <p>Username: Berchie </p>
+            {/* <br/> */}
+            <span>Change Password</span><Button>Change Password</Button>
+            <p>Role: Admin </p>
           </Card>
         </Col>
       </Row>
