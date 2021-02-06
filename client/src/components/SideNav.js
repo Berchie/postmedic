@@ -29,9 +29,9 @@ export default function SideNav() {
   return (
     <Sider
       style={{
-        width: 256,
+        // width: 256,
         overflow: "auto",
-        height: "100vh",
+        minHeight: "100vh",
         position: "fixed",
         left: 0,
       }}
