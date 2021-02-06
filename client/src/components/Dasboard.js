@@ -21,7 +21,7 @@ import PatientGrid from "./PatientGrid";
 import AdmissionGrid from "./AdmissionGrid";
 import AppointmentGrid from "./AppointmentGrid";
 import ProfileGrid from "./ProfileGrid";
-import SideNav from "./SideNav";
+
 
 
 const { SubMenu } = Menu;
@@ -40,8 +40,6 @@ export default function Dasboard() {
   return (
     <Router>
       <Layout>
-        {/* <SideNav/> */}
-
         <Sider
           style={{
             minHeight: "100vh",
