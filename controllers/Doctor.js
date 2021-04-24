@@ -34,14 +34,15 @@ doctorRouter.post("/newdoctor", [], async (req, res) => {
   }
 
   Doctor.findOne({
-    name: { firstname: req.body.name.firstname, lastname: req.body.lastname },
+    name: { firstname: req.body.firstname, lastname: req.body.lastname },
   }).then((user) => {
     if (user) {
       return res.status(400).json({ name: "Name already exists" });
     }
   });
 
-  const institution = await Institution.findOne({ _id: req.body.institutionId });
+  const institution = await Institution.findById({ _id: req.body.institutionId });
+
 
   const doctor = new Doctor({
     name: { firstname: req.body.firstname, lastname: req.body.lastname },
