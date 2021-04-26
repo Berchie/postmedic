@@ -5,6 +5,7 @@ const Admission = require("./Admission");
 const Appointment = require("./Appointment");
 const CurrentPregnancy = require("./CurrentPregnancy");
 const RiskFactor = require("./RiskFactor");
+const Insitution = require("./Institution");
 
 const PatientSchema = new mongoose.Schema(
   {
@@ -31,13 +32,21 @@ const PatientSchema = new mongoose.Schema(
   { autoIndex: false }
 );
 
-PatientSchema.pre("remove", (next) => {
-  ObHistoryRouter.remove({ patient: this._id }).exec();
-  RiskFactor.remove({ patient: this._id }).exec();
-  CurrentPregnancy.remove({ patient: this._id }).exec();
-  Admission.remove({patient:this._id}).exec();
-  Appointment.remove({patient:this._id}).exec();
-  next();
+PatientSchema.pre("remove", async (next) => {
+  try {
+    await Insitution.findByIdAndUpdate(
+      { _id: this.institution }, //this key word is used here to refer to the document or DoctorSchema
+      { $pull: { patients: this._id } }
+    );
+    await ObHistoryRouter.remove({ patient: this._id }).exec();
+    await RiskFactor.remove({ patient: this._id }).exec();
+    await CurrentPregnancy.remove({ patient: this._id }).exec();
+    await Admission.remove({ patient: this._id }).exec();
+    await Appointment.remove({ patient: this._id }).exec();
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = mongoose.model("Patient", PatientSchema);
