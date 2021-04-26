@@ -313,25 +313,15 @@ patientRouter.put(
 );
 
 patientRouter.delete("/:id", async (req, res) => {
-  try {
 
-    const institution = await Patient.find().populate(req.params.id);
-
-    const delPatId = req.params.id;
-
-    const deletedPatient =  await Patient.findByIdAndDelete(req.params.id);
-    res.status(204).send("Record deleted.");
-
-    // remove paitent from institution collection
-    var index = institution.patients.indexOf(delPatId);
-    if (index > -1) {
-      institution.patients.splice(index,1);
+  Patient.findById(req.params.id, function(err, patient){
+    if (err) {
+      return next(err);
     }
-    institution.save();
+    patient.remove();
+    res.status(202).json({ message: "Patient deleted successfully." });
+  })
 
-  } catch (err) {
-    res.status(400).send(err.message);
-  }
 });
 
 module.exports = patientRouter;
