@@ -38,11 +38,11 @@ PatientSchema.pre("remove", async (next) => {
       { _id: this.institution }, //this key word is used here to refer to the document or DoctorSchema
       { $pull: { patients: this._id } }
     );
-    await ObHistoryRouter.remove({ patient: this._id }).exec();
+    await ObHistoryRouter.remove({ _id: this._id }).exec();
     await RiskFactor.remove({ patient: this._id }).exec();
-    await CurrentPregnancy.remove({ patient: this._id }).exec();
-    await Admission.remove({ patient: this._id }).exec();
-    await Appointment.remove({ patient: this._id }).exec();
+    await CurrentPregnancy.remove({ _id: { $in: this._id } }).exec();
+    await Admission.remove({ _id: { $in: this._id } }).exec();
+    await Appointment.remove({ _id: { $in: this._id } }).exec();
     next();
   } catch (err) {
     next(err);
