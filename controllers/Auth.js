@@ -271,20 +271,17 @@ authRouter.post(
   }
 );
 
+
+//Delete User Account
 authRouter.delete("/:id", async (req, res) => {
-  try {
-    const institution = await Patient.find().populate(req.params.id);
-
-    const deletedUser = await User.findByIdAndDelete(req.params.id).exec();
-    res.status(300).json({ message: "Record deleted!" });
-
-    var index = institution.users.indexOf(delPatId);
-    if (index > -1) {
-      institution.patients.splice(index, 1);
+  
+  User.findById(req.params.id, function(err, user){
+    if (err) {
+      return next(err);
     }
-    institution.save();
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+    user.remove();
+    res.status(202).json({ message: "User Account Deleted Successfully." });
+  })
+  
 });
 module.exports = authRouter;
