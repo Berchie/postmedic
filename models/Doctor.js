@@ -15,6 +15,7 @@ const DocotrSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//middleware for remove deleted doctor's id from insitution
 DocotrSchema.pre("remove", async function (next) {
   try {
     await Institution.findByIdAndUpdate(
@@ -26,4 +27,5 @@ DocotrSchema.pre("remove", async function (next) {
     next(err);
   }
 });
+
 module.exports = mongoose.model("Doctor", DocotrSchema);
