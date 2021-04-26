@@ -33,16 +33,23 @@ doctorRouter.post("/newdoctor", [], async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  Doctor.findOne({
-    name: { firstname: req.body.firstname, lastname: req.body.lastname },
-  }).then((user) => {
-    if (user) {
-      return res.status(400).json({ name: "Name already exists" });
-    }
+  // Doctor.find({
+  //   email: req.body.email
+  // }).then((user) => {
+  //   if (user) {
+  //     return res.status(400).json({ name: "Name already exists" });
+  //   }
+  // });
+  const userE = await Doctor.find({
+    "name.firstname": req.body.firstname,
+    "name.lastname": req.body.lastname,
   });
+  console.log(userE);
+  if (userE.length > 0) {
+    return res.status(400).json({ name: "Name already exists" });
+  }
 
   const institution = await Institution.findById({ _id: req.body.institutionId });
-
 
   const doctor = new Doctor({
     name: { firstname: req.body.firstname, lastname: req.body.lastname },
@@ -89,23 +96,15 @@ doctorRouter.put("/:id", async (req, res) => {
 
 //delete doctor
 doctorRouter.delete("/:id", async (req, res) => {
-  const institution = await Institution.find().populate(req.params.id);
-
   const instDoctorId = req.params.id;
 
-  try {
-    const deletedDoctor = await Doctor.findByIdAndRemove(req.params.id);
-    res.status(203).json({ message: "Record deleted." });
-
-    //remove the object id reference from the Institution collection
-    var index = institution.doctors.indexOf(instDoctorId);
-    if (index > -1) {
-      institution.doctors.splice(index, 1);
+  Doctor.findById(instDoctorId, function (err, doctor) {
+    if (err) {
+      return next(err);
     }
-    institution.save();
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+    doctor.remove();
+    res.status(202).json({ message: "Doctor deleted successfully." });
+  });
 });
 
 module.exports = doctorRouter;
