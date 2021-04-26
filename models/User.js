@@ -19,7 +19,7 @@ UserSchema.pre("remove", async function (next) {
   try {
     await Insitution.findByIdAndUpdate(
       { _id: this.institution }, //this key word is used here to refer to the document or DoctorSchema
-      { $pull: { patients: this._id } }
+      { $pull: { users: this._id } }
     );
     next();
   } catch (err) {
