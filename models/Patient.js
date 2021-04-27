@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const ObHistoryRouter = require("../controllers/ObstetricHistory");
+const ObHistoryRouter = require("./ObstetricHistory");
 const logger = require("../utils/logger");
 const Admission = require("./Admission");
 const Appointment = require("./Appointment");
 const CurrentPregnancy = require("./CurrentPregnancy");
 const RiskFactor = require("./RiskFactor");
-const Insitution = require("./Institution");
+const Institution = require("./Institution");
 
 const PatientSchema = new mongoose.Schema(
   {
@@ -21,7 +21,7 @@ const PatientSchema = new mongoose.Schema(
     city: { type: String, trim: true, require: true },
     telephone: { type: String, trim: true, require: true },
     email: { type: String, lowercase: true, trim: true },
-    instituition: { type: mongoose.Schema.Types.ObjectId, ref: "Institution" },
+    institution: { type: mongoose.Schema.Types.ObjectId, ref: "Institution" },
     appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }],
     admissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Admission" }],
     riskFactor: { type: mongoose.Schema.Types.ObjectId, ref: "RiskFactor" },
@@ -32,17 +32,17 @@ const PatientSchema = new mongoose.Schema(
   { autoIndex: false }
 );
 
-PatientSchema.pre("remove", async (next) => {
+PatientSchema.pre("remove", async function (next) {
   try {
-    await Insitution.findByIdAndUpdate(
-      { _id: this.institution }, //this key word is used here to refer to the document or DoctorSchema
+    await Institution.findByIdAndUpdate(
+      { _id: this.institution}, //this key word is used here to refer to the document or DoctorSchema
       { $pull: { patients: this._id } }
     );
-    await ObHistoryRouter.remove({ patient: this._id }).exec();
-    await RiskFactor.remove({ patient: this._id }).exec();
-    await CurrentPregnancy.remove({ _id: { $in: this._id } }).exec();
-    await Admission.remove({ _id: { $in: this._id } }).exec();
-    await Appointment.remove({ _id: { $in: this._id } }).exec();
+    await ObHistoryRouter.deleteOne({ patient: this._id }).exec();
+    await RiskFactor.deleteOne({ patient: this._id }).exec();
+    await CurrentPregnancy.deleteOne({ _id: { $in: this._id } }).exec();
+    await Admission.deleteOne({ _id: { $in: this._id } }).exec();
+    await Appointment.deleteOne({ _id: { $in: this._id } }).exec();
     next();
   } catch (err) {
     next(err);
