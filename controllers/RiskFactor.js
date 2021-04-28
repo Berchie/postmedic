@@ -2,6 +2,7 @@ const riskFactorRouter = require("express").Router();
 const { body, validationResult } = require("express-validator");
 const RiskFactor = require("../models/RiskFactor");
 const Paitent = require("../models/Patient");
+const { nextDay } = require("date-fns");
 
 riskFactorRouter.get("/", async (req, res) => {
   try {
@@ -68,14 +69,17 @@ riskFactorRouter.put("/:id", async (req, res) => {
   }
 });
 
-riskFactorRouter.delete('/:id', async (req, res)=>{
-  try {
-    const deleteRiskFactor = await RiskFactor.findByIdAndDelete(req.params.id);
-    res.status(204).json({message: "Record deleted."});
-    await Paitent.riskFactor.id(req.params.id).remove();
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-})
+riskFactorRouter.delete("/:id", async (req, res) => {
+  
+  RiskFactor.findById(req.params.id, async function (err, riskFactor) {
+    if (err) {
+      return next(err);
+    }
+    await riskFactor.remove();
+    return res.json({ error: err.message });
+  });
+
+
+});
 
 module.exports = riskFactorRouter;
