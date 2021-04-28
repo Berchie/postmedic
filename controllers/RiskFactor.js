@@ -1,17 +1,17 @@
 const riskFactorRouter = require("express").Router();
-const { body, validationResult } = require("express-validator");
 const RiskFactor = require("../models/RiskFactor");
 const Paitent = require("../models/Patient");
-const { nextDay } = require("date-fns");
+
 
 riskFactorRouter.get("/", async (req, res) => {
   try {
-    const data = await RiskFactor.find({ patient: req.body.id }).exec();
-    res.status(200).json(data);
+    const data = await RiskFactor.findOne({ patient: req.body.id }).exec();
+    return res.status(200).json(data);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 });
+
 
 riskFactorRouter.post("/", async (req, res) => {
   const patient = Paitent.findOne({ _id: req.body.patientId });
@@ -39,7 +39,7 @@ riskFactorRouter.post("/", async (req, res) => {
     patient.riskFactor = savedriskFactor._id;
     patient.save();
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    return res.status(401).json({ error: err.message });
   }
 });
 
@@ -64,7 +64,7 @@ riskFactorRouter.put("/:id", async (req, res) => {
     });
     res.status(202).json({ message: "Record save." });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 });
 
