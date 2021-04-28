@@ -60,7 +60,6 @@ riskFactorRouter.put("/:id", async (req, res) => {
         other: req.body.other,
         otherSpecify: req.body.otherSpecify,
         previousSurgery: req.body.previousSurgery,
-        patient: patient._id,
       },
     });
     res.status(202).json({ message: "Record save." });
@@ -70,7 +69,7 @@ riskFactorRouter.put("/:id", async (req, res) => {
 });
 
 riskFactorRouter.delete("/:id", async (req, res) => {
-  
+
   RiskFactor.findById(req.params.id, async function (err, riskFactor) {
     if (err) {
       return next(err);
