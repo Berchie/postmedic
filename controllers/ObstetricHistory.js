@@ -51,13 +51,13 @@ ObHistoryRouter.put("/:id", async (req, res) => {
 });
 
 ObHistoryRouter.delete("/:id", async (req, res) => {
-  try {
-    const deleteObHist = await ObstetericHistory.findByIdAndDelete(req.params.id);
-    res.status(204).json({message: "Record deleted."});
-    await Patient.obstetricHistory.id(req.params.id).remove();
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  ObstetericHistory.findById(req.params.id, async function (err, obstetericHistory) {
+    if (err) {
+      return next(err);
+    }
+    await obstetericHistory.remove();
+    return res.json({ message: "Obsteteric History deleted successfully." });
+  })
 });
 
 module.exports = ObHistoryRouter;
