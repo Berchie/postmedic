@@ -9,7 +9,7 @@ const AppointmentSchema = new mongoose.Schema({
 
 AppointmentSchema.pre('remove', async function(next) {
   await Patient.update(
-      { _id : this.appointments}, 
+      { _id : this.patient}, 
       { $pull: { appointments: this._id } },
       { multi: true })  //if reference exists in multiple documents 
   .exec();
