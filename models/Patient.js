@@ -40,9 +40,9 @@ PatientSchema.pre("remove", async function (next) {
     );
     await ObHistoryRouter.deleteOne({ patient: this._id }).exec();
     await RiskFactor.deleteOne({ patient: this._id }).exec();
-    await CurrentPregnancy.deleteOne({ _id: { $in: this._id } }).exec();
-    await Admission.deleteOne({ _id: { $in: this._id } }).exec();
-    await Appointment.deleteOne({ _id: { $in: this._id } }).exec();
+    await CurrentPregnancy.deleteMany({ _id: { $in: this.currentPregnancies } }).exec();
+    await Admission.deleteMany({ _id: { $in: this.admissions } }).exec();
+    await Appointment.deleteMany({ _id: { $in: this.appointments } }).exec();
     next();
   } catch (err) {
     next(err);

@@ -7,29 +7,35 @@ const Appointment = require("../models/Appointment");
 const Admission = require("../models/Admission");
 const RiskFactor = require("../models/RiskFactor");
 const CurrentPregnancy = require("../models/CurrentPregnancy");
-const {format} = require('date-fns');
+const { format, parse } = require("date-fns");
+
+
 
 let patientId = null;
-const dateFromat = 'YYYY-MM-DD';
+const dateFromat = "yyyy-MM-dd";
 
 patientRouter.get("/", async (req, res) => {
-  res.send("Populating Patien related records.");
+  // Populating Patient records.
   try {
     const allPatient = await Patient.find().populate(req.query.instId);
-    res.status(200).json(allPatient);
+    return res.status(200).json(allPatient);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 });
 
 patientRouter.get("/:id", async (req, res) => {
-  // res.send(" populating Patient related records.")
-  try {
-    const patient = await Patient.findById(req.params.id).populate('obstetricHistory').populate('currentPregnancies')
-    .populate('riskFactor').populate('admissions').populate('appointments');
-    res.status(200).json(patient);
+  // populating Patient related records.
+    try {
+    const patient = await Patient.findById(req.params.id)
+      .populate("obstetricHistory")
+      .populate("currentPregnancies")
+      .populate("riskFactor")
+      .populate("admissions")
+      .populate("appointments");
+      return res.status(200).json(patient);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 });
 
@@ -42,7 +48,7 @@ patientRouter.post(
       max: 150,
     }),
     body("lastname", "Last name field cannot be empty.").not().isEmpty(),
-    body("latname", "Last name must be between 2-150 characters long.").isLength({
+    body("lastname", "Last name must be between 2-150 characters long.").isLength({
       min: 2,
       max: 150,
     }),
@@ -66,137 +72,140 @@ patientRouter.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    const institution = await Institution.findOne({ name: req.body.institutionId }).exec();
+    const institution = await Institution.findById({ _id: req.body.institutionId }).exec();
+    console.log(institution);
 
     const patient = new Patient({
       name: {
-        firstname: req.body.data.firstname,
-        middlename: req.body.data.middlename,
-        lastname: req.body.data.lastname,
+        firstname: req.body.firstname,
+        middlename: req.body.middlename,
+        lastname: req.body.lastname,
       },
-      age: parseInt(req.body.data.age),
-      gender: req.body.data.gender,
-      hospitalId: req.body.data.hospitalId,
-      address: req.body.data.address,
-      city: req.body.data.city,
-      telephone: req.body.data.phone,
-      email: req.body.data.email,
-      instituition: patient._id,
+      age: parseInt(req.body.age),
+      gender: req.body.gender,
+      hospitalId: req.body.hospitalId,
+      address: req.body.address,
+      city: req.body.city,
+      phone: req.body.phone,
+      email: req.body.email,
+      institution: institution._id,
     });
 
     try {
       const savePatient = await patient.save();
-      res.status(201).json({ message: "Record saved." });
-      patientId= savePatient._id;
+      // res.status(201).json({ message: "Record saved." });
+      patientId = savePatient._id;
       institution.patients.push(patientId);
-      institution.save();
+      await institution.save();
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: err.message });
     }
+    console.log(format(parse(req.body.dischargedDate,'dd-MM-yyyy', new Date()), dateFromat));
 
     //create admission document
     const admission = new Admission({
-      dateOfAdmission: format(req.body.data.admissionDate,dateFromat),
-      dateOfDischarged: format(req.body.data.dischargedDate,dateFromat),
-      durationOfStay: parseInt(req.body.data.numberOfDays),
-      dischargedDiagnosis: req.body.data.dischargedDiagnosis,
+      admissionDate: format(parse(req.body.admissionDate,'dd-MM-yyyy', new Date()), dateFromat),
+      dischargedDate: format(parse(req.body.dischargedDate,'dd-MM-yyyy', new Date()), dateFromat),
+      durationOfStay: parseInt(req.body.durationOfStay),
+      dischargedDiagnosis: req.body.dischargedDiagnosis,
       patient: patientId,
     });
     try {
       const savedAdmission = await admission.save();
-      res.status(201).json({ message: "Record saved." });
-      patient.Admission.push(savedAdmission._id);
-      patient.save();
+      // res.status(201).json({ message: "Record saved." });
+      patient.admissions.push(savedAdmission._id);
+      await patient.save();
     } catch (err) {
-      res.status(401).json({ error: err.message });
+      return res.status(401).json({ error: err.message });
     }
-    
+
     //create appointment document
     const appointment = new Appointment({
-      DateOfAppointment: format(req.body.data.appointmentDate,dateFromat),
-      // Status: req.body.status,
-      // DateOfArrival: req.body.data.arrivalDate,
+      appointmentDate: format(parse(req.body.appointmentDate,'dd-MM-yyyy', new Date() ), dateFromat),
+      Status: req.body.status,
+      arrivalDate: req.body.arrivalDate,
       patient: patientId,
     });
 
     try {
       const savedAppointment = await appointment.save();
-      res.status(201).json({ message: "Record saved." });
-      patient.appointment.push(savedAppointment._id);
-      patient.save();
-    } catch (err) {
-      res.status(401).json({ error: err.message });
+      // res.status(201).json({ message: "Record saved." });
+      patient.appointments.push(savedAppointment._id);
+      await patient.save();
+      } catch (err) {
+      return res.status(401).json({ error: err.message });
     }
 
     //create Obstetric History document
     const obstetricHistory = new ObstetricHistory({
-      numberOfPregnancies: parseInt(req.body.data.pregnancy),
-      numberOfBirth: parseInt(req.body.data.birth),
-      numberOfAbortionSpontaneous: parseInt(req.body.data.spontaneous),
-      numberOfAbortionInduced: parseInt(req.body.data.induced),
-      patient: patientId
+      numberOfPregnancies: parseInt(req.body.pregnancy),
+      numberOfBirth: parseInt(req.body.birth),
+      numberOfAbortionSpontaneous: parseInt(req.body.spontaneous),
+      numberOfAbortionInduced: parseInt(req.body.induced),
+      patient: patientId,
     });
-  
+
     try {
       const savedObstetricHisotry = await obstetricHistory.save();
-      res.status(201).json({ message: "Record saved." });
+      // res.status(201).json({ message: "Record saved." });
       patient.obstetricHistory = savedObstetricHisotry._id;
-      patient.save();
+      await patient.save();
     } catch (err) {
-      res.status(401).json({ error: err.message });
+      return res.status(401).json({ error: err.message });
     }
 
     //create current pregnancy
     const currentPragnancy = new CurrentPregnancy({
-      edd: format(req.body.data.edd, dateFromat),
-      ega: parseInt(req.body.data.ega),
+      edd: format(parse(req.body.edd,'dd-MM-yyyy', new Date()), dateFromat),
+      ega: parseInt(req.body.ega),
       patient: patient._id,
     });
-  
+
     try {
       const savedCurrentPreg = await currentPragnancy.save();
-      res.status(201).json({ message: "Record saved." });
-      patient.currentPragnancy.push(savedCurrentPreg._id);
-      (await patient).save();
+      // res.status(201).json({ message: "Record saved." });
+      patient.currentPregnancies.push(savedCurrentPreg._id);
+      await patient.save();
     } catch (err) {
-      res.status(401).json({ error: err.message });
+      return res.status(401).json({ error: err.message });
     }
 
     //create Risk Factor document
     const riskFactor = new RiskFactor({
-      hypertension: req.body.data.hypertension,
-      heartDisease: req.body.data.heartDisease,
-      sickleCellDisease: req.body.data.sickleCellDisease,
-      diabetes: req.body.data.diabetes,
-      epilepsy: req.body.data.epilepsy,
-      asthma: req.body.data.asthma,
-      tb: req.body.data.tb,
-      respiratoryDisease: req.body.data.respiratoryDisease,
-      mentalIllness: req.body.data.mentalIllness,
-      scd: req.body.data.scd,
-      other: req.body.data.other,
-      otherSpecify: req.body.data.otherSpecify,
-      previousSurgery: req.body.data.previousSurgery,
+      hypertension: req.body.hypertension,
+      heartDisease: req.body.heartDisease,
+      sickleCellDisease: req.body.sickleCellDisease,
+      diabetes: req.body.diabetes,
+      epilepsy: req.body.epilepsy,
+      asthma: req.body.asthma,
+      tb: req.body.tb,
+      respiratoryDisease: req.body.respiratoryDisease,
+      mentalIllness: req.body.mentalIllness,
+      scd: req.body.scd,
+      other: req.body.other,
+      otherSpecify: req.body.otherSpecify,
+      previousSurgery: req.body.previousSurgery,
       patient: patientId,
     });
-  
+
     try {
       const savedriskFactor = await riskFactor.save();
-      res.status(201).json({ message: "Record saved." });
+      // res.status(201).json({ message: "Record saved." });
       patient.riskFactor = savedriskFactor._id;
-      patient.save();
+      await patient.save();
     } catch (err) {
-      res.status(401).json({ error: err.message });
+      return res.status(401).json({ error: err.message });
     }
 
+    return res.status(201).json({ message: "Record saved." });
   }
 );
 
 patientRouter.post(
-  "/patient",
+  "/addpatient",
   [
     body("firstname", "firstname name field cannot be empty.").not().isEmpty(),
     body("firstname", "First name must be between 4-150 characters long.").isLength({
@@ -224,7 +233,7 @@ patientRouter.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     const institution = await Institution.findOne({ name: req.body.institutionId }).exec();
@@ -240,9 +249,9 @@ patientRouter.post(
       hospitalId: req.body.hospitalId,
       address: req.body.address,
       city: req.body.city,
-      telephone: req.body.phone,
+      phone: req.body.phone,
       email: req.body.email,
-      instituition: patient._id,
+      institution: patient._id,
     });
 
     try {
@@ -251,7 +260,7 @@ patientRouter.post(
       institution.patients.push(savePatient._id);
       institution.save();
     } catch (err) {
-      res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: err.message });
     }
   }
 );
@@ -265,7 +274,7 @@ patientRouter.put(
       max: 150,
     }),
     body("lastname", "Last name field cannot be empty.").not().isEmpty(),
-    body("latname", "Last name must be between 4-150 characters long.").isLength({
+    body("lastname", "Last name must be between 4-150 characters long.").isLength({
       min: 4,
       max: 150,
     }),
@@ -285,11 +294,11 @@ patientRouter.put(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     try {
-      const updatedPatient = await Patient.findByIdAndUpdate(require.params.id, {
+      const updatedPatient = await Patient.findByIdAndUpdate(req.params.id, {
         $set: {
           name: {
             firstname: req.body.firstname,
@@ -301,27 +310,25 @@ patientRouter.put(
           hospitalId: req.body.hospitalId,
           address: req.body.address,
           city: req.body.city,
-          telephone: req.body.phone,
+          phone: req.body.phone,
           email: req.body.email,
         },
       });
-      res.status(200).send("Record Saved");
+      return res.status(200).send("Record Saved");
     } catch (err) {
-      res.status(400).send(err.message);
+      return res.status(400).send(err.message);
     }
   }
 );
 
-patientRouter.delete("/:id", async (req, res) => {
-
-  Patient.findById(req.params.id, function(err, patient){
+patientRouter.delete("/:patientId", (req, res) => {
+  Patient.findById(req.params.patientId, async function (err, patient) {
     if (err) {
       return next(err);
     }
-    patient.remove();
-    res.status(202).json({ message: "Patient deleted successfully." });
-  })
-
+    await patient.remove();
+    return res.json({ message: "Patient deleted successfully." });
+  });
 });
 
 module.exports = patientRouter;
