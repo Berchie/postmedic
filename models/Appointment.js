@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const AppointmentSchema = new mongoose.Schema({
-  DateOfAppointment: { type: Date, require: true },
+  appointmentDate: { type: Date, require: true },
   Status: { type: String, enum: ["Pending", "Attended"] },
-  DateOfArrival: { type: Date },
+  arrivalDate: { type: Date },
   patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" }
 }, { autoIndex: false }, {timestamps: true});
 
-AppointmentSchema.pre('remove', function(next) {
-  Patient.update(
-      { appointments : this._id}, 
+AppointmentSchema.pre('remove', async function(next) {
+  await Patient.update(
+      { _id : this.appointments}, 
       { $pull: { appointments: this._id } },
       { multi: true })  //if reference exists in multiple documents 
   .exec();
