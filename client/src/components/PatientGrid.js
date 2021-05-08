@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
 import "../styles/Custom.css";
+
+const pat_url= 'http://localhost:5000/patient';
 
 const columns = [
   {
@@ -52,6 +54,22 @@ const columns = [
   },
 ];
 
+// useEffect(() => {
+//   fetch(pat_url)
+//   .then(res =>{
+//     if (res.ok) {     //to check respong is return 200-299(ok)
+//       res.json()
+//       .then(data => {
+//           // setCityWeather(data);
+//           console.log(data);
+//           // console.log('Country: '+ data.location["country"] +', City: ' + data.location["name"])
+//       })                
+//   } else {
+//       console.log("Not Successful")
+//   }
+//   })
+
+// }, [])
 const data = [];
 for (let i = 1; i < 100; i++) {
   data.push({
@@ -71,6 +89,25 @@ for (let i = 1; i < 100; i++) {
 export default function PatientGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [patData, setPatData] = useState([]);
+
+
+  useEffect(() => {
+    fetch(pat_url)
+    .then(res =>{
+      if (res.ok) {     //to check respong is return 200-299(ok)
+        res.json()
+        .then(data => {
+            setPatData(data);
+            console.log(data);
+            // console.log('Country: '+ data.location["country"] +', City: ' + data.location["name"])
+        })                
+    } else {
+        console.log("Not Successful")
+    }
+    })
+  
+  }, [])
 
   const start = () => {
     setLoading(true);
