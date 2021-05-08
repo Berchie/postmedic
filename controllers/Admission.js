@@ -5,7 +5,7 @@ const Paitent = require("../models/Patient");
 
 admissionRouter.get("/", async (req, res) => {
   try {
-    const data = await Admission.find({ patient: req.body.patid }).exec();
+    const data = await Admission.find().populate('patient');
     res.status(200).json(data);
   } catch (err) {
     res.status(400).json({ error: err.message });
