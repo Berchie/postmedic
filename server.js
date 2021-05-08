@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const config = require("./utils/config");
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const logger = require("./utils/logger");
 const mongoose = require("mongoose");
@@ -29,6 +30,9 @@ const passport = require('passport')
 require('./utils/passport')(passport);
 
 const app = express();
+
+//cors
+app.use(cors());
 
 //bodyparser
 app.use(bodyParser.json());
