@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import axios from "axios";
 import "../styles/Custom.css";
 
-const pat_url= 'http://localhost:5000/patient';
+const api = axios.create({
+  baseURL: `http://localhost:5000/patient`,
+});
 
 const columns = [
   {
@@ -13,14 +16,19 @@ const columns = [
     // render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Hospital ID",
+    dataIndex: "hop_id",
+    key: "hop_id",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "City",
+    dataIndex: "city",
+    key: "city",
+  },
+  {
+    title: "Phone",
+    dataIndex: "phone",
+    key: "phone",
   },
   // {
   //   title: "Tags",
@@ -54,31 +62,17 @@ const columns = [
   },
 ];
 
-// useEffect(() => {
-//   fetch(pat_url)
-//   .then(res =>{
-//     if (res.ok) {     //to check respong is return 200-299(ok)
-//       res.json()
-//       .then(data => {
-//           // setCityWeather(data);
-//           console.log(data);
-//           // console.log('Country: '+ data.location["country"] +', City: ' + data.location["name"])
-//       })                
-//   } else {
-//       console.log("Not Successful")
-//   }
-//   })
 
-// }, [])
-const data = [];
-for (let i = 1; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
+
+// const data = [];
+// for (let i = 1; i < 100; i++) {
+//   data.push({
+//     key: i,
+//     name: `Edward King ${i}`,
+//     age: 32,
+//     address: `London, Park Lane no. ${i}`,
+//   });
+// }
 
 // const rowSelection = {
 //   onChange: (selectedRowKeys, selectedRows) => {
@@ -91,23 +85,21 @@ export default function PatientGrid() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [patData, setPatData] = useState([]);
 
-
   useEffect(() => {
-    fetch(pat_url)
-    .then(res =>{
-      if (res.ok) {     //to check respong is return 200-299(ok)
-        res.json()
-        .then(data => {
-            setPatData(data);
-            console.log(data);
-            // console.log('Country: '+ data.location["country"] +', City: ' + data.location["name"])
-        })                
-    } else {
-        console.log("Not Successful")
-    }
-    })
-  
+    api.get("/").then(res=>{ setPatData(res.data) });
   }, [])
+  
+
+  const data = [];
+  for (let i = 0; i < patData.length; i++) {
+    data.push({
+      key: patData[i]._id,
+      name: `${patData[i].name.firstname} ${patData[i].name.middlename} ${patData[i].name.lastname}`,
+      hop_id: patData[i].hospitalId,
+      city: patData[i].city,
+      phone: patData[i].telephone,
+    });
+  }
 
   const start = () => {
     setLoading(true);
@@ -152,29 +144,25 @@ export default function PatientGrid() {
     <div>
       <div style={{ marginBottom: 16 }}>
         <div className='btn-menu'>
-        <Button  type='primary' onClick={start} loading={loading}>
-          <UserAddOutlined />
-          Reload
-        </Button>
+          <Button type='primary' onClick={start} loading={loading}>
+            <UserAddOutlined />
+            Reload
+          </Button>
         </div>
         <div className='btn-menu'>
-        <Button  type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
-          <EditOutlined />
-          Edit
-        </Button>
+          <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
+            <EditOutlined />
+            Edit
+          </Button>
         </div>
-        
+
         <div className='btn-menu'>
-        <Button
-          type='primary'
-          onClick={startDelete}
-          danger
-          disabled={!hasSelected}>
-          <DeleteOutlined />
-          Delete
-        </Button>
+          <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
+            <DeleteOutlined />
+            Delete
+          </Button>
         </div>
-        <span style={{ paddingLeft: 10}}>
+        <span style={{ paddingLeft: 10 }}>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
