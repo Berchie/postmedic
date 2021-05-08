@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Table, Space, Checkbox, Button } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
 import "../styles/Custom.css";
+
+const admissionApi = axios.create({
+  baseURL: `http://localhost:5000/admission`
+});
+
 
 const columns = [
   {
@@ -11,14 +17,19 @@ const columns = [
     // render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Hospital ID",
+    dataIndex: "hosp_id",
+    key: "hosp_id",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "Admission",
+    dataIndex: "admission",
+    key: "admission",
+  },
+  {
+    title: "Discharged",
+    dataIndex: "discharged",
+    key: "discharged",
   },
   // {
   //   title: "Tags",
@@ -52,16 +63,6 @@ const columns = [
   },
 ];
 
-const data = [];
-for (let i = 1; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
-
 // const rowSelection = {
 //   onChange: (selectedRowKeys, selectedRows) => {
 //     console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
@@ -71,6 +72,29 @@ for (let i = 1; i < 100; i++) {
 export default function AdmissionGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [admission, setAdmission] = useState([]);
+
+  const getAdmission = async () =>{
+    let data = await admissionApi.get('/').then(({data})=> data);
+    setAdmission(data);
+  }
+
+  useEffect( () => {
+    getAdmission()
+  }, []);
+
+  console.log(admission)
+
+  const data = [];
+  for (let i = 0; i < admission.length; i++) {
+    data.push({
+      key: admission[i]._id,
+      name: `${admission[i].patient.name.firstname} ${admission[i].patient.name.middlename} ${admission[i].patient.name.lastname}`,
+      hosp_id: admission[i].patient.hospitalId,
+      admission: new Date(`${admission[i].admissionDate}`).toLocaleDateString(),
+      discharged: new Date(`${admission[i].dischargedDate}`).toLocaleDateString(),
+    });
+  }
 
   const start = () => {
     setLoading(true);
@@ -113,31 +137,29 @@ export default function AdmissionGrid() {
 
   return (
     <div>
+      {data === null ? '': 
+      <>
       <div style={{ marginBottom: 16 }}>
         <div className='btn-menu'>
-        <Button  type='primary' onClick={start} loading={loading}>
-          <UserAddOutlined />
-          Reload
-        </Button>
+          <Button type='primary' onClick={start} loading={loading}>
+            <UserAddOutlined />
+            Reload
+          </Button>
         </div>
         <div className='btn-menu'>
-        <Button  type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
-          <EditOutlined />
-          Edit
-        </Button>
+          <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
+            <EditOutlined />
+            Edit
+          </Button>
         </div>
-        
+
         <div className='btn-menu'>
-        <Button
-          type='primary'
-          onClick={startDelete}
-          danger
-          disabled={!hasSelected}>
-          <DeleteOutlined />
-          Delete
-        </Button>
+          <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
+            <DeleteOutlined />
+            Delete
+          </Button>
         </div>
-        <span style={{ paddingLeft: 10}}>
+        <span style={{ paddingLeft: 10 }}>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
@@ -151,6 +173,9 @@ export default function AdmissionGrid() {
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
       />
+      
+      </>
+      }
     </div>
   );
 }
