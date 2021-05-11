@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Table, Space, Checkbox, Button } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import { useQuery } from "react-query";
+import { getAdmissionGrid } from "./../api/admissionAPI";
+import Loader from "react-loader-spinner";
 import "../styles/Custom.css";
-
-const admissionApi = axios.create({
-  baseURL: `http://localhost:5000/admission`
-});
-
 
 const columns = [
   {
@@ -72,28 +69,33 @@ const columns = [
 export default function AdmissionGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [admission, setAdmission] = useState([]);
+  // const [admission, setAdmission] = useState([]);
 
-  const getAdmission = async () =>{
-    let data = await admissionApi.get('/').then(({data})=> data);
-    setAdmission(data);
+  const { data, error, isLoading, isError } = useQuery("admissions", getAdmissionGrid);
+
+  if (isLoading) {
+    return <Loader type='ThreeDots' color='#ccc' height={30} width={40} className='loader-align' />;
   }
 
-  useEffect( () => {
-    getAdmission()
-  }, []);
+  if (isError) {
+    return <sapn>Erorr: {error.message} </sapn>;
+  }
 
-  console.log(admission)
+  console.log(data);
 
-  const data = [];
-  for (let i = 0; i < admission.length; i++) {
-    data.push({
-      key: admission[i]._id,
-      name: `${admission[i].patient.name.firstname} ${admission[i].patient.name.middlename} ${admission[i].patient.name.lastname}`,
-      hosp_id: admission[i].patient.hospitalId,
-      admission: new Date(`${admission[i].admissionDate}`).toLocaleDateString(),
-      discharged: new Date(`${admission[i].dischargedDate}`).toLocaleDateString(),
-    });
+  const tableData = [];
+  try {
+    for (let i = 0; i < data.length; i++) {
+      tableData.push({
+        key: data[i]._id,
+        name: `${data[i].patient.name.firstname} ${data[i].patient.name.middlename} ${data[i].patient.name.lastname}`,
+        hosp_id: data[i].patient.hospitalId,
+        admission: new Date(`${data[i].admissionDate}`).toLocaleDateString(),
+        discharged: new Date(`${data[i].dischargedDate}`).toLocaleDateString(),
+      });
+    }
+  } catch (error) {
+    console.log('Error: ', error.message);
   }
 
   const start = () => {
@@ -137,45 +139,46 @@ export default function AdmissionGrid() {
 
   return (
     <div>
-      {data === null ? '': 
-      <>
-      <div style={{ marginBottom: 16 }}>
-        <div className='btn-menu'>
-          <Button type='primary' onClick={start} loading={loading}>
-            <UserAddOutlined />
-            Reload
-          </Button>
-        </div>
-        <div className='btn-menu'>
-          <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
-            <EditOutlined />
-            Edit
-          </Button>
-        </div>
+      {data === null ? (
+        ""
+      ) : (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <div className='btn-menu'>
+              <Button type='primary' onClick={start} loading={loading}>
+                <UserAddOutlined />
+                Reload
+              </Button>
+            </div>
+            <div className='btn-menu'>
+              <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
+                <EditOutlined />
+                Edit
+              </Button>
+            </div>
 
-        <div className='btn-menu'>
-          <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
-            <DeleteOutlined />
-            Delete
-          </Button>
-        </div>
-        <span style={{ paddingLeft: 10 }}>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-        </span>
-      </div>
-      <Table
-        rowSelection={{
-          type: Checkbox,
-          ...rowSelection,
-        }}
-        dataSource={data}
-        columns={columns}
-        pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
-        scroll={{ y: 550 }}
-      />
-      
-      </>
-      }
+            <div className='btn-menu'>
+              <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
+                <DeleteOutlined />
+                Delete
+              </Button>
+            </div>
+            <span style={{ paddingLeft: 10 }}>
+              {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
+            </span>
+          </div>
+          <Table
+            rowSelection={{
+              type: Checkbox,
+              ...rowSelection,
+            }}
+            dataSource={tableData}
+            columns={columns}
+            pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
+            scroll={{ y: 550 }}
+          />
+        </>
+      )}
     </div>
   );
 }

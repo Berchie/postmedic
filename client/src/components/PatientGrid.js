@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
-import axios from "axios";
+import { useQuery } from "react-query";
+import { getPatientGrid } from "../api/patientsAPI";
+import Loader from "react-loader-spinner";
 import "../styles/Custom.css";
-
-const api = axios.create({
-  baseURL: `http://localhost:5000/patient`,
-});
 
 const columns = [
   {
@@ -62,8 +60,6 @@ const columns = [
   },
 ];
 
-
-
 // const data = [];
 // for (let i = 1; i < 100; i++) {
 //   data.push({
@@ -83,22 +79,31 @@ const columns = [
 export default function PatientGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [patData, setPatData] = useState([]);
+  // const [patData, setPatData] = useState([]);
 
-  useEffect(() => {
-    api.get("/").then(res=>{ setPatData(res.data) });
-  }, [])
-  
+  const { isLoading, isError, data, error } = useQuery("patients", getPatientGrid);
 
-  const data = [];
-  for (let i = 0; i < patData.length; i++) {
-    data.push({
-      key: patData[i]._id,
-      name: `${patData[i].name.firstname} ${patData[i].name.middlename} ${patData[i].name.lastname}`,
-      hop_id: patData[i].hospitalId,
-      city: patData[i].city,
-      phone: patData[i].telephone,
-    });
+  if (isLoading) {
+    return <Loader type='ThreeDots' color='#ccc' height={30} width={40} className='loader-align' />;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
+  const tableData = [];
+  try {
+    for (let i = 0; i < data.length; i++) {
+      tableData.push({
+        key: data[i]._id,
+        name: `${data[i].name.firstname} ${data[i].name.middlename} ${data[i].name.lastname}`,
+        hop_id: data[i].hospitalId,
+        city: data[i].city,
+        phone: data[i].telephone,
+      });
+    }
+  } catch (error) {
+    console.log("Something went wrong!", error);
   }
 
   const start = () => {
@@ -171,7 +176,7 @@ export default function PatientGrid() {
           type: Checkbox,
           ...rowSelection,
         }}
-        dataSource={data}
+        dataSource={tableData}
         columns={columns}
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
