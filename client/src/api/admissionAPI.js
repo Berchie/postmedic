@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./axios";
 
 //fetching admission for data table(datagrid)
 export const getAdmissionGrid = async () => {
