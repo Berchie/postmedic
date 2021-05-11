@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import "../styles/Custom.css";
 
 const columns = [
@@ -27,7 +27,7 @@ const columns = [
     render: (text, record) => (
       <Space size='middle'>
         {/* <a>Invite {record.name}</a> */}
-        <a>Delete</a>
+        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
       </Space>
     ),
   },
