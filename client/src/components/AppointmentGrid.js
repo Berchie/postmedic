@@ -162,6 +162,7 @@ export default function AppointmentGrid() {
         }}
         dataSource={tableData}
         columns={columns}
+        size="small"
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
       />
