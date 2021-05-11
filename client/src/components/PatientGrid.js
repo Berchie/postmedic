@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserAddOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getPatientGrid } from "../api/patientsAPI";
 import Loader from "react-loader-spinner";
@@ -28,47 +33,18 @@ const columns = [
     dataIndex: "phone",
     key: "phone",
   },
-  // {
-  //   title: "Tags",
-  //   key: "tags",
-  //   dataIndex: "tags",
-  //   render: (tags) => (
-  //     <>
-  //       {tags.map((tag) => {
-  //         let color = tag.length > 5 ? "geekblue" : "green";
-  //         if (tag === "loser") {
-  //           color = "volcano";
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
   {
     title: "Action",
     key: "action",
     render: (text, record) => (
       <Space size='middle'>
-        {/* <a>Invite {record.name}</a> */}
-        <a>Delete</a>
+        <Button type='primary' size='small' icon={<InfoCircleOutlined />}>
+          View
+        </Button>
       </Space>
     ),
   },
 ];
-
-// const data = [];
-// for (let i = 1; i < 100; i++) {
-//   data.push({
-//     key: i,
-//     name: `Edward King ${i}`,
-//     age: 32,
-//     address: `London, Park Lane no. ${i}`,
-//   });
-// }
 
 // const rowSelection = {
 //   onChange: (selectedRowKeys, selectedRows) => {
@@ -79,7 +55,6 @@ const columns = [
 export default function PatientGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  // const [patData, setPatData] = useState([]);
 
   const { isLoading, isError, data, error } = useQuery("patients", getPatientGrid);
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Table, Space, Checkbox, Button } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getAdmissionGrid } from "./../api/admissionAPI";
 import Loader from "react-loader-spinner";
@@ -28,33 +28,13 @@ const columns = [
     dataIndex: "discharged",
     key: "discharged",
   },
-  // {
-  //   title: "Tags",
-  //   key: "tags",
-  //   dataIndex: "tags",
-  //   render: (tags) => (
-  //     <>
-  //       {tags.map((tag) => {
-  //         let color = tag.length > 5 ? "geekblue" : "green";
-  //         if (tag === "loser") {
-  //           color = "volcano";
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
+
   {
     title: "Action",
     key: "action",
     render: (text, record) => (
       <Space size='middle'>
-        {/* <a>Invite {record.name}</a> */}
-        <a>Delete</a>
+        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
       </Space>
     ),
   },

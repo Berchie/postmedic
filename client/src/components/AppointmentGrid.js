@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Table, Space, Checkbox, Button, Tag } from "antd";
+import { DeleteOutlined, EditOutlined, UserAddOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import { useQuery } from "react-query";
+import { getAppoitmentGrid } from "./../api/appointmentAPI";
+import Loader from "react-loader-spinner";
 import "../styles/Custom.css";
+
+// let color;
 
 const columns = [
   {
@@ -11,56 +16,41 @@ const columns = [
     // render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Hospital ID",
+    dataIndex: "hosp_id",
+    key: "hosp_id",
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
+    title: "Appointment",
+    dataIndex: "appointment",
+    key: "appointment",
   },
-  // {
-  //   title: "Tags",
-  //   key: "tags",
-  //   dataIndex: "tags",
-  //   render: (tags) => (
-  //     <>
-  //       {tags.map((tag) => {
-  //         let color = tag.length > 5 ? "geekblue" : "green";
-  //         if (tag === "loser") {
-  //           color = "volcano";
-  //         }
-  //         return (
-  //           <Tag color={color} key={tag}>
-  //             {tag.toUpperCase()}
-  //           </Tag>
-  //         );
-  //       })}
-  //     </>
-  //   ),
-  // },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status) => (
+      <>
+        {status === "Pending" ? <Tag color='red'>{status}</Tag> : <Tag color='green'>{status}</Tag>}
+      </>
+    ),
+  },
+  {
+    title: "Attended",
+    dataIndex: "attended",
+    key: "attended",
+  },
   {
     title: "Action",
     key: "action",
     render: (text, record) => (
       <Space size='middle'>
         {/* <a>Invite {record.name}</a> */}
-        <a>Delete</a>
+        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
       </Space>
     ),
   },
 ];
-
-const data = [];
-for (let i = 1; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
 
 // const rowSelection = {
 //   onChange: (selectedRowKeys, selectedRows) => {
@@ -71,6 +61,34 @@ for (let i = 1; i < 100; i++) {
 export default function AppointmentGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const { data, error, isLoading, isError } = useQuery("appointments", getAppoitmentGrid);
+
+  if (isLoading) {
+    return <Loader type='ThreeDots' color='#ccc' height={30} width={40} className='loader-align' />;
+  }
+
+  if (isError) {
+    return <sapn>Erorr: {error.message} </sapn>;
+  }
+
+  const tableData = [];
+  try {
+    for (let i = 0; i < data.length; i++) {
+      tableData.push({
+        key: data[i]._id,
+        name: `${data[i].patient.name.firstname} ${data[i].patient.name.lastname}`,
+        hosp_id: data[i].patient.hospitalId,
+        appointment: new Date(`${data[i].appointmentDate}`).toLocaleDateString(),
+        status: `${data[i].status}`,
+        attended: new Date(`${data[i].arrivalDate}`).toLocaleDateString(),
+      });
+    }
+  } catch (error) {
+    console.log("Something went wrong! ", error.message);
+  }
+
+  console.log(data.status);
 
   const start = () => {
     setLoading(true);
@@ -115,29 +133,25 @@ export default function AppointmentGrid() {
     <div>
       <div style={{ marginBottom: 16 }}>
         <div className='btn-menu'>
-        <Button  type='primary' onClick={start} loading={loading}>
-          <UserAddOutlined />
-          Reload
-        </Button>
+          <Button type='primary' onClick={start} loading={loading}>
+            <UserAddOutlined />
+            Reload
+          </Button>
         </div>
         <div className='btn-menu'>
-        <Button  type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
-          <EditOutlined />
-          Edit
-        </Button>
+          <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
+            <EditOutlined />
+            Edit
+          </Button>
         </div>
-        
+
         <div className='btn-menu'>
-        <Button
-          type='primary'
-          onClick={startDelete}
-          danger
-          disabled={!hasSelected}>
-          <DeleteOutlined />
-          Delete
-        </Button>
+          <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
+            <DeleteOutlined />
+            Delete
+          </Button>
         </div>
-        <span style={{ paddingLeft: 10}}>
+        <span style={{ paddingLeft: 10 }}>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
@@ -146,7 +160,7 @@ export default function AppointmentGrid() {
           type: Checkbox,
           ...rowSelection,
         }}
-        dataSource={data}
+        dataSource={tableData}
         columns={columns}
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
