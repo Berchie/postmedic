@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const AppointmentSchema = new mongoose.Schema({
   appointmentDate: { type: Date, require: true },
-  Status: { type: String, enum: ["Pending", "Attended"] },
+  status: { type: String, enum: ["Pending", "Attended"] },
   arrivalDate: { type: Date },
   patient: { type: mongoose.Schema.Types.ObjectId, ref: "Patient" }
 }, { autoIndex: false }, {timestamps: true});
