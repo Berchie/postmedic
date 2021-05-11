@@ -7,7 +7,6 @@ import {
   MenuUnfoldOutlined,
   HomeOutlined,
   SettingOutlined,
-  IdcardOutlined,
   UsergroupAddOutlined,
   TeamOutlined,
   BankOutlined,
