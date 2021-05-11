@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button } from "antd";
+import { Table, Space, Checkbox, Button, Alert } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getAdmissionGrid } from "./../api/admissionAPI";
@@ -58,7 +58,7 @@ export default function AdmissionGrid() {
   }
 
   if (isError) {
-    return <sapn>Erorr: {error.message} </sapn>;
+    return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;
   }
 
   console.log(data);

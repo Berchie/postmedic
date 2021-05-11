@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button, Tag } from "antd";
+import { Table, Space, Checkbox, Button, Tag, Alert } from "antd";
 import { DeleteOutlined, EditOutlined, UserAddOutlined,InfoCircleOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getAppoitmentGrid } from "./../api/appointmentAPI";
@@ -69,7 +69,7 @@ export default function AppointmentGrid() {
   }
 
   if (isError) {
-    return <sapn>Erorr: {error.message} </sapn>;
+    return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;;
   }
 
   const tableData = [];

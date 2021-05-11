@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button } from "antd";
+import { Table, Space, Checkbox, Button, Alert } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -63,7 +63,7 @@ export default function PatientGrid() {
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>;
+    return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;
   }
 
   const tableData = [];
