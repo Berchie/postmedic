@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { Table, Space, Checkbox, Button, Alert } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  UserAddOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
+import { useQuery } from "react-query";
+import { getUsersGrid } from "./../api/usersAPI";
+import Loader from "react-loader-spinner";
 import "../styles/Custom.css";
 
 const columns = [
@@ -16,36 +24,57 @@ const columns = [
     key: "username",
   },
   {
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
+  },
+  {
     title: "Role",
     dataIndex: "role",
     key: "role",
   },
- 
+
   {
     title: "Action",
     key: "action",
     render: (text, record) => (
-      <Space size='middle'>
-        {/* <a>Invite {record.name}</a> */}
-        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
+      <Space size='small'>
+        <Button type='primary' size='small' icon={<InfoCircleOutlined />}>
+          View
+        </Button>
       </Space>
     ),
   },
 ];
 
-const data = [];
-for (let i = 1; i < 100; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    username: `edward_king ${i}`,
-    role: `Role ${i}`,
-  });
-}
-
 export default function ProfileGrid() {
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const { data, error, isLoading, isError } = useQuery("users", getUsersGrid);
+
+  if (isLoading) {
+    return <Loader type='ThreeDots' color='#ccc' height={30} width={40} className='loader-align' />;
+  }
+
+  if (isError) {
+    return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;
+  }
+
+  const tableData = [];
+  try {
+    for (let i = 0; i < data.length; i++) {
+      tableData.push({
+        key: data[i]._id,
+        name: data[i].name,
+        username: data[i].username,
+        email: data[i].email,
+        role: data[i].role,
+      });
+    }
+  } catch (error) {
+    console.log("Something went wrong! ", error.message);
+  }
 
   const start = () => {
     setLoading(true);
@@ -90,29 +119,25 @@ export default function ProfileGrid() {
     <div>
       <div style={{ marginBottom: 16 }}>
         <div className='btn-menu'>
-        <Button  type='primary' onClick={start} loading={loading}>
-          <UserAddOutlined />
-          Reload
-        </Button>
+          <Button type='primary' onClick={start} loading={loading}>
+            <UserAddOutlined />
+            Reload
+          </Button>
         </div>
         <div className='btn-menu'>
-        <Button  type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
-          <EditOutlined />
-          Edit
-        </Button>
+          <Button type='default' onClick={startEdit} disabled={!hasSelectedEdit}>
+            <EditOutlined />
+            Edit
+          </Button>
         </div>
-        
+
         <div className='btn-menu'>
-        <Button
-          type='primary'
-          onClick={startDelete}
-          danger
-          disabled={!hasSelected}>
-          <DeleteOutlined />
-          Delete
-        </Button>
+          <Button type='primary' onClick={startDelete} danger disabled={!hasSelected}>
+            <DeleteOutlined />
+            Delete
+          </Button>
         </div>
-        <span style={{ paddingLeft: 10}}>
+        <span style={{ paddingLeft: 10 }}>
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
@@ -121,8 +146,9 @@ export default function ProfileGrid() {
           type: Checkbox,
           ...rowSelection,
         }}
-        dataSource={data}
+        dataSource={tableData}
         columns={columns}
+        size="small"
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
       />
