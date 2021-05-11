@@ -78,11 +78,11 @@ export default function Dasboard() {
               </Menu.Item>
               <SubMenu key='sub3' title='Users'>
                 <Menu.Item key='8' icon={<UsergroupAddOutlined />}>
-                      Users
+                <Link to='profile'>  Users </Link>
                 </Menu.Item>
-                <Menu.Item key='9' icon={<IdcardOutlined />}>
+                {/* <Menu.Item key='9' icon={<IdcardOutlined />}>
                   <Link to='profile'> Profile </Link>
-                </Menu.Item>
+                </Menu.Item> */}
               </SubMenu>
             </SubMenu>
           </Menu>
