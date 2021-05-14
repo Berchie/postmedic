@@ -9,10 +9,11 @@ export const getPatientGrid = async () => {
     return `Something went wrong:  ${err}`;
   }
 };
-export const getPatient =  async ({id}) =>{
+export const getPatient =  async (id) =>{
   try {
-    const res = await axios.get(`/patitent/${id}`);
-    return res.data
+    const res = await axios.get(`/patient/${id}`);
+    const data = await res.data
+    return data
   } catch (error) {
     return `Something went wrong:  ${error}`;
   }

@@ -5,10 +5,23 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
-import {ReactQueryDevtools} from 'react-query/devtools'
+import { ReactQueryDevtools } from "react-query/devtools";
+// import axios from "axios";
 
+// const defaultQueryFn = async ({ queryKey }) => {
+//   const { data } = await axios.get(`http://localhost:5000${queryKey[0]}`);
+//   return data;
+// };
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       queryFn: defaultQueryFn,
+//     },
+//   },
+// });
+
+const queryClient = new QueryClient()
 
 ReactDOM.render(
   <React.StrictMode>

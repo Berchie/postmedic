@@ -6,14 +6,14 @@ export const tableColumns = (...titles) => {
       Columns.push(
         {
           title: titles[i],
-          dataIndex: titles[i].toLowerCase(),
+          dataIndex: titles[i].toLocaleLowerCase().replace(/ /g, ''),
         },
       );
     } else {
       Columns.push(
         {
           title: titles[i],
-          dataIndex: titles[i].toLowerCase(),
+          dataIndex: titles[i].toLocaleLowerCase().replace(/ /g,''),
           width: 150,
         },
       );

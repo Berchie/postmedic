@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button, Alert } from "antd";
+import { Table, Space, Checkbox, Button, Alert, Drawer } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -10,51 +10,56 @@ import { useQuery } from "react-query";
 import { getPatientGrid } from "../api/patientsAPI";
 import Loader from "react-loader-spinner";
 import "../styles/Custom.css";
+import PatientDrawer from './../components/drawers/PatientInfo'
 
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    // render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Hospital ID",
-    dataIndex: "hop_id",
-    key: "hop_id",
-  },
-  {
-    title: "City",
-    dataIndex: "city",
-    key: "city",
-  },
-  {
-    title: "Phone",
-    dataIndex: "phone",
-    key: "phone",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (text, record) => (
-      <Space size='middle'>
-        <Button type='primary' size='small' icon={<InfoCircleOutlined />}>
-          View
-        </Button>
-      </Space>
-    ),
-  },
-];
 
-// const rowSelection = {
-//   onChange: (selectedRowKeys, selectedRows) => {
-//     console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
-//   },
-// };
+
 
 export default function PatientGrid() {
+
+  
+  //array of columns for the table 
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Hospital ID",
+      dataIndex: "hop_id",
+      key: "hop_id",
+    },
+    {
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size='middle'>
+          <Button type='primary' size='small' icon={<InfoCircleOutlined />} onClick={showDrawer}>
+            View
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+
+
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [rowKeys, setRowKeys] = useState();
+  const [visible, setVisible] = useState(false);
 
   const { isLoading, isError, data, error } = useQuery("patients", getPatientGrid);
 
@@ -66,6 +71,7 @@ export default function PatientGrid() {
     return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;
   }
 
+  //datasource for the table (should be in array)
   const tableData = [];
   try {
     for (let i = 0; i < data.length; i++) {
@@ -81,6 +87,18 @@ export default function PatientGrid() {
     console.log("Something went wrong!", error);
   }
 
+  //function showDrawer and onClose use to show and close the drawer
+  const showDrawer =(e)=>{
+    e.preventDefault()
+    setVisible(true)
+  }
+
+  const onClose = (e) =>{
+    e.preventDefault()
+    setVisible(false)
+  }
+
+  //create new patient
   const start = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -89,6 +107,8 @@ export default function PatientGrid() {
       setLoading(false);
     }, 1000);
   };
+
+  //edit or update patient
   const startEdit = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -98,6 +118,7 @@ export default function PatientGrid() {
     }, 700);
   };
 
+  //delete patient
   const startDelete = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -151,12 +172,17 @@ export default function PatientGrid() {
           type: Checkbox,
           ...rowSelection,
         }}
+        onRow={(column)=>{onclick = (e) =>{e.preventDefault(); setRowKeys(column.key)}}}
         dataSource={tableData}
         columns={columns}
         size="small"
         pagination={{ showSizeChanger: true, PageSize: 10, showTitle: true }}
         scroll={{ y: 550 }}
       />
+
+      <Drawer width={640} placement="right" closable={false} onClose={onClose} visible={visible}>
+        <PatientDrawer patientId={rowKeys}/>
+      </Drawer>
     </div>
   );
 }
