@@ -77,6 +77,13 @@ app.use('/riskfactor', riskFactorRouter);
 /*doctors route*/
 app.use('/doctor', doctorRouter);
 
+ function errorHandler(err, req, res, next) {
+    if (err) {
+      return res.json({error: err})
+    } 
+}
+
+
 app.get("/", (req, res) => {
   res.status(200).end("Welcome to PostMedic API");
 });
@@ -114,6 +121,8 @@ app.get("/api/notes", (request, response) => {
     response.json(notes);
   });
 });
+
+app.use(errorHandler)
 
 app.listen(config.PORT, () => {
   logger.info(`Server is running on port ${config.PORT}`);
