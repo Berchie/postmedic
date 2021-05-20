@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button, Alert } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { Table, Checkbox, Button, Alert } from "antd";
+import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getAdmissionGrid } from "./../api/admissionAPI";
 import Loader from "react-loader-spinner";
@@ -30,13 +30,9 @@ const columns = [
   },
 
   {
-    title: "Action",
-    key: "action",
-    render: (text, record) => (
-      <Space size='middle'>
-        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
-      </Space>
-    ),
+    title: "Diagnosis",
+    dataIndex:"diagnosis",
+    key: "diagnosis",
   },
 ];
 
@@ -72,6 +68,7 @@ export default function AdmissionGrid() {
         hosp_id: data[i].patient.hospitalId,
         admission: new Date(`${data[i].admissionDate}`).toLocaleDateString(),
         discharged: new Date(`${data[i].dischargedDate}`).toLocaleDateString(),
+        diagnosis: `${data[i].dischargedDiagnosis}`
       });
     }
   } catch (error) {
