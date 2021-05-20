@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Table, Space, Checkbox, Button, Tag, Alert } from "antd";
-import { DeleteOutlined, EditOutlined, UserAddOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import { Table, Checkbox, Button, Tag, Alert } from "antd";
+import { DeleteOutlined, EditOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useQuery } from "react-query";
 import { getAppoitmentGrid } from "./../api/appointmentAPI";
 import Loader from "react-loader-spinner";
@@ -39,16 +39,6 @@ const columns = [
     title: "Attended",
     dataIndex: "attended",
     key: "attended",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (text, record) => (
-      <Space size='middle'>
-        {/* <a>Invite {record.name}</a> */}
-        <Button type="primary" size="small" icon={<InfoCircleOutlined />}>View</Button>
-      </Space>
-    ),
   },
 ];
 
