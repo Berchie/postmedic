@@ -12,7 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 const columns = [
   { id: 'admissiondate', label: 'Admission Date', minWidth: 100 },
   { id: 'dischargedate', label: 'Discharged Date', minWidth: 100 },
-  { id: 'numberofdays', label: 'Number of Days', minWidth: 170, align: 'right'},
+  { id: 'numberofdays', label: 'Days', minWidth: 100, align: 'right'},
   { id: 'dischargeddiagnosis', label: 'Discharged Diagnosis', minWidth: 170, },
 ];
 
@@ -36,7 +36,7 @@ export default function TableAdmission({data}) {
   try {
     for (let i = 0; i < data.length; i++) {
       rows.push(
-        createData(data[i].admissionDate, data[i].dischargedDate,data[i].durationOfStay,data[i].dischargedDiagnosis)
+        createData(new Date(data[i].admissionDate).toLocaleDateString(), new Date(data[i].dischargedDate).toLocaleDateString(),data[i].durationOfStay,data[i].dischargedDiagnosis)
       )
       
     }
