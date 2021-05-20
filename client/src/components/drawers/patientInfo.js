@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React from "react";
 import { getPatient } from "../../api/patientsAPI";
 import { useQuery } from "react-query";
-import { Row, Col, Divider, List, Spin } from "antd";
-import InfiniteScroll from "react-infinite-scroll-component";
-import Loader from "react-loader-spinner";
+import { Row, Col, Divider, Spin, Alert } from "antd";
 import "../drawers/patientInfo.css";
 import "../../styles/Custom.css";
-
+import TableAdmission from  './tableAdmission'
+import TableAppointment from './tableAppointment'
+import TableCurrentPregnancy from "./tableCurrentPregnacy";
 
 const DescriptionItem = ({ title, content }) => (
   <div className='site-description-item-profile-wrapper'>
@@ -15,135 +15,44 @@ const DescriptionItem = ({ title, content }) => (
   </div>
 );
 
+
 export default function PatientInfo({ patientId }) {
- 
-  let [dataAdmission, setDataAdmission] = useState([]);
-  let [dataAppointment, setDataAppointment] = useState([]);
-  let [dataPregnancy, setDataPregnancy] = useState([]);
 
   //quering the database for specific or one patient record
   const { data, error, isError, isLoading } = useQuery(["patients", patientId], () =>
     getPatient(patientId)
   );
 
-  /** setting initial state of hasMore to true (infinitescroll prop)*/
-  const [hasMore, setHasMore] = useState(true);
 
-  /**
-   * function for fetching admission, appointment, and pregnancy
-   * data for infinitscroll list
-   *  [fetchMoreData,fetchMoreDataApp,fetchMoreDataPreg]
-   */
-  const fetchMoreData = (e) => {
-    if (dataAdmission.length >= admissionData.length) {
-      setHasMore(false);
-    }
-
-    let result = setTimeout(() => {
-      return setDataAdmission(
-        (prev) =>
-          (dataAdmission = dataAdmission.concat(admissionData.slice(e.length, e.length + 3)))
-      );
-    }, 2000);
-    if (e.length >= admissionData.length) {
-      return clearTimeout(result);
-    }
-    return result;
-  };
-
-  const fetchMoreDataApp = (e) => {
-    if (dataAppointment.length >= appointmentData.length) {
-      setHasMore(false);
-    }
-
-    let result = setTimeout(() => {
-      return setDataAppointment(
-        (prev) =>
-          (dataAppointment = dataAppointment.concat(appointmentData.slice(e.length, e.length + 3)))
-      );
-    }, 2000);
-
-    if (e.length >= appointmentData) {
-      clearTimeout(result);
-    }
-
-    return result;
-  };
-
-  const fetchMoreDataPreg = (e) => {
-    if (dataPregnancy.length >= pregnancyData.length) {
-      setHasMore(false);
-    }
-
-    let result = setTimeout(() => {
-      return setDataPregnancy(
-        (prev) =>
-          (dataPregnancy = dataPregnancy.concat(pregnancyData.slice(e.length, e.length + 3)))
-      );
-    }, 2000);
-
-    if (e.length >= pregnancyData) {
-      clearTimeout(result);
-    }
-
-    return result;
-  };
-
-  const fetchData = useMemo(() => {
-    fetchMoreData(dataAdmission);
-  }, [dataAdmission]);
-  const fetchDataApp = useMemo(() => {
-    fetchMoreDataApp(dataAppointment);
-  }, [dataAppointment]);
-  const fetchDataPreg = useMemo(() => {
-    fetchMoreDataPreg(dataPregnancy);
-  }, [dataPregnancy]);
-
-  if (patientId === null) {
-    return <Loader type='ThreeDots' color='#ccc' height={30} width={40} className='loader-align' />;
-  }
-
-  if (isLoading) {
-    console.log("loading....");
-    return <Spin size='large' style={{ textAlign: "center" }} />;
-  }
-
+  /** delceration of admission, appointment, current pregnancy data*/
   let admissionData,
     appointmentData,
     pregnancyData = [];
 
-  if (isError) {
-    console.log(error);
+
+  if (patientId === null) {
+    return <Spin size='large' style={{ textAlign: "center" }} />;
+  }
+   
+  if (isLoading) {
+    return <Spin size='large' style={{ textAlign: "center" }} />;
   }
 
-  if (data === null) {
-    console.log("still fetching....");
-  } else {
+  if (isError) {
+    return <Alert message='Error' description={`Error: ${error.message}`} banner closable />;
+  }
+
+  console.log(data);
+
+  if (data !== null) {
     admissionData = [...data.admissions];
     appointmentData = [...data.appointments];
     pregnancyData = [...data.currentPregnancies];
-    setDataAdmission(admissionData.slice(0, 3));
-    setDataAppointment(appointmentData.slice(0, 3));
-    setDataPregnancy(pregnancyData.slice(0, 3));
   }
 
-  const admData = [];
-  try {
-    for (let i = 0; i < admissionData.length; i++) {
-      admData.push({
-        key: admissionData[i]._id,
-        admissiondate: new Date(admissionData[i].admissionDate).toLocaleDateString(),
-        dischargeddate: new Date(admissionData[i].dischargedDate).toLocaleDateString(),
-        daysofstay: admissionData[i].durationOfStay,
-        diagnosis: admissionData[i].dischargedDiagnosis,
-      });
-    }
-  } catch (error) {
-    console.log("Something went wrong!", error);
-  }
 
   console.log("Appointment info: ", appointmentData);
-  console.log("Admission info: ", admData);
+  console.log("Admission info: ", data);
   console.log("Current Pregnancy info: ", pregnancyData);
 
   return (
@@ -250,118 +159,46 @@ export default function PatientInfo({ patientId }) {
         </Col>
       </Row>
       <Divider />
+      <p className='site-description-item-profile-p'>Obstetric History</p>
+      <Row>
+        <Col span={12}>
+          <DescriptionItem
+            title='Abortion Induced'
+            content={`${data.obstetricHistory.numberOfAbortionInduced}`}
+          />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title='Abortion Spontaneous'
+            content={`${data.obstetricHistory.numberOfAbortionSpontaneous}`}
+          />
+        </Col>
+      </Row>
+      <Row>
+      <Col span={12}>
+          <DescriptionItem title='Births' content={`${data.obstetricHistory.numberOfBirth}`} />
+        </Col>
+        <Col span={12}>
+          <DescriptionItem
+            title='Pregnancies'
+            content={`${data.obstetricHistory.numberOfPregnancies}`}
+          />
+        </Col>
+      </Row>
+      <Divider />
       <p className='site-description-item-profile-p'>Admissions</p>
       <Row>
-        <Col span={24}>
-          <div id='scrollableDiv' className='infinite-container'>
-            <InfiniteScroll
-              dataLength={dataAdmission.length}
-              next={fetchData}
-              hasMore={hasMore}
-              loader={<Spin size='small'></Spin>}
-              scrollableTarget='scrollableDiv'
-              endMessage={
-                <p style={{ textAlign: "center" }}>
-                  <b>Yay! You have seen it all</b>
-                </p>
-              }>
-              <List
-                header={
-                  <Row>
-                    <Col span={8}>Admission Date</Col>
-                    <Col span={8}>Discharged Date</Col>
-                    <Col span={8}>Admission Duration</Col>
-                  </Row>
-                }
-                dataSource={dataAdmission}
-                size='small'
-                renderItem={(item) => (
-                  <List.Item>
-                    <Row key={item._id}>
-                      <Col span={8}>{new Date(item.admissionDate).toLocaleDateString()}</Col>
-                      <Col span={8}>{new Date(item.dischargedDate).toLocaleDateString()}</Col>
-                      <Col span={8}>{`${item.durationOfStay} day(s)`}</Col>
-                    </Row>
-                  </List.Item>
-                )}
-              />
-            </InfiniteScroll>
-          </div>
-        </Col>
+            <TableAdmission data={admissionData}/>
       </Row>
       <Divider />
       <p className='site-description-item-profile-p'>Appointments</p>
       <Row>
-        <Col span={24} id='scrollableDiv' className='infinite-container'>
-          <InfiniteScroll
-            dataLength={dataAppointment.length}
-            next={fetchDataApp}
-            hasMore={hasMore}
-            loader={<Spin size='small'></Spin>}
-            scrollableTarget='scrollableDiv'
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }>
-            <List
-              header={
-                <Row>
-                  <Col span={8}>Appointment Date</Col>
-                  <Col span={8}>Status</Col>
-                  <Col span={8}>Attended Date</Col>
-                </Row>
-              }
-              dataSource={dataAppointment}
-              size='small'
-              renderItem={(item) => (
-                <List.Item>
-                  <Row key={item._id}>
-                    <Col span={8}>{new Date(item).toLocaleDateString()}</Col>
-                    <Col span={8}>{`${item.Status}`}</Col>
-                    <Col span={8}>{new Date(item.arrivalDate).toLocaleDateString()}</Col>
-                  </Row>
-                </List.Item>
-              )}
-            />
-          </InfiniteScroll>
-        </Col>
+        <TableAppointment data={appointmentData}/>
       </Row>
       <Divider />
       <p className='site-description-item-profile-p'>Current Pregnancy</p>
       <Row>
-        <Col span={24} id='scrollableDiv' className='infinite-container'>
-          <InfiniteScroll
-            dataLength={dataPregnancy.length}
-            next={fetchDataPreg}
-            hasMore={hasMore}
-            loader={<Spin size='small'></Spin>}
-            scrollableTarget='scrollableDiv'
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>Yay! You have seen it all</b>
-              </p>
-            }>
-            <List
-              header={
-                <Row>
-                  <Col span={12}>EDD</Col>
-                  <Col span={12}>ega</Col>
-                </Row>
-              }
-              dataSource={dataPregnancy}
-              size='small'
-              renderItem={(item) => (
-                <List.Item>
-                  <Row key={item._id}>
-                    <Col span={12}>{new Date(item.edd).toLocaleDateString()}</Col>
-                    <Col span={12}>{`${item.ega}`}</Col>
-                  </Row>
-                </List.Item>
-              )}
-            />
-          </InfiniteScroll>
-        </Col>
+        <TableCurrentPregnancy data={pregnancyData}/>
       </Row>
     </div>
   );
